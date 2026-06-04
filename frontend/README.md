@@ -4,8 +4,8 @@ Este directorio contiene la aplicación cliente construida en React y TypeScript
 
 ## 📊 Resumen estadístico del frontend
 
-- 5 páginas principales: `LandingPage`, `LoginPage`, `Dashboard`, `AutoServicioBannerPage`, `BolsaEmpleoPage`
-- 2 componentes clave: `ChatWindow`, `ProtectedRoute`
+- 6 páginas principales: `LandingPage`, `LoginPage`, `Dashboard`, `TeacherDashboard`, `AutoServicioBannerPage`, `BolsaEmpleoPage`
+- 3 componentes clave: `ChatWindow`, `CampusMapSection`, `ProtectedRoute`
 - 1 servicio API central: `src/services/api.ts`
 - 1 store de autenticación: `src/store/authStore.ts`
 - 1 widget flotante de chatbot con estados cerrado y abierto
@@ -65,8 +65,10 @@ Muestra el mismo fondo de la interfaz principal con el chatbot desplegado.
 ### Componentes principales
 
 - `src/components/ChatWindow.tsx`: Widget flotante del chatbot con envío de texto, grabación de voz y reproducción de audio.
+- `src/components/CampusMapSection.tsx`: Mapa visual del campus con edificios, aulas y servicios frecuentes.
 - `src/components/ProtectedRoute.tsx`: Protege rutas del dashboard para usuarios autenticados.
 - `src/pages/Dashboard.tsx`: Panel central del estudiante con notificaciones, horario y calificaciones.
+- `src/pages/TeacherDashboard.tsx`: Panel docente para materias, horario y carga de actividades.
 - `src/pages/LandingPage.tsx`: Página pública con acceso al chatbot.
 - `src/pages/LoginPage.tsx`: Interfaz de inicio de sesión.
 - `src/pages/AutoServicioBannerPage.tsx` y `src/pages/BolsaEmpleoPage.tsx`: Páginas informativas.
@@ -102,6 +104,9 @@ Soporta interacción por:
 - `GET /api/students/stats/`
 - `GET /api/students/notifications/`
 - `GET /api/students/activities/`
+- `GET /api/students/teacher/subjects/`
+- `GET /api/students/teacher/schedule/`
+- `GET|POST /api/students/teacher/activities/`
 - `POST /api/chat/`
 - `POST /api/voice/chat/`
 
@@ -110,6 +115,7 @@ Soporta interacción por:
 - Usa `navigator.mediaDevices.getUserMedia({ audio: true })` para grabar.
 - Envía audio en `multipart/form-data` a `/api/voice/chat/`.
 - Reproduce respuestas de voz cuando el backend devuelve `audio_base64`.
+- Detiene cualquier audio anterior antes de reproducir una nueva respuesta para evitar respuestas superpuestas.
 - Maneja el cambio visual del botón de micrófono durante la grabación.
 
 ## 🚀 Cómo iniciar el entorno de desarrollo

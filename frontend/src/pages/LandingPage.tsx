@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Mail, ChevronRight, Globe, GraduationCap, FileBadge, BookOpen, Users, Key } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ChatWindow from '../components/ChatWindow';
+import CampusMapSection from '../components/CampusMapSection';
 
 const slides = [
   {
@@ -147,6 +148,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           <a href="https://www.pucesi.edu.ec/webs2/index.php/blog-noticias-pucei/" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">BLOG</a>
+          <a href="#mapa-campus" className="hover:text-primary transition-colors">MAPA CAMPUS</a>
           <a href="https://www.puce.edu.ec/sitios/formularios/sugerencias/" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">BUZÓN DE SUGERENCIAS</a>
           <a href="mailto:uci@pucesi.edu.ec"><Mail size={18} className="text-secondary hover:text-primary cursor-pointer" /></a>
         </div>
@@ -252,6 +254,8 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <CampusMapSection />
 
       {/* Sección Oferta Académica */}
       <section className="py-16 bg-[#444444] relative overflow-hidden">

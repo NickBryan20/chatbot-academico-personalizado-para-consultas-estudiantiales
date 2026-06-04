@@ -38,7 +38,11 @@ class RAGEngine:
 
     def _source_priority(self, source: str) -> int:
         """Prioriza documentos curados del proyecto sobre scraping web cambiante."""
-        if source in {'informacion_institucional.txt', 'puce_ibarra_info.txt'}:
+        if source in {
+            'informacion_institucional.txt',
+            'puce_ibarra_info.txt',
+            'campus_mapa_servicios.txt',
+        }:
             return 3
         if source == 'scraped_web_content.txt':
             return 2

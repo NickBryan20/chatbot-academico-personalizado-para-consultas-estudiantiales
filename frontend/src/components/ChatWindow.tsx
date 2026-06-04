@@ -43,6 +43,33 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
     });
   });
   const scrollRef = useRef<HTMLDivElement>(null);
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const stopCurrentAudio = () => {
+    if (!activeAudioRef.current) return;
+    activeAudioRef.current.pause();
+    activeAudioRef.current.currentTime = 0;
+    activeAudioRef.current.src = '';
+    activeAudioRef.current = null;
+  };
+
+  const playAudioResponse = (audioBase64?: string) => {
+    if (!audioBase64) return;
+
+    stopCurrentAudio();
+    const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+    activeAudioRef.current = audio;
+    audio.onended = () => {
+      if (activeAudioRef.current === audio) {
+        activeAudioRef.current = null;
+      }
+    };
+    audio.play().catch(e => console.warn("Autoplay blocked:", e));
+  };
+
+  useEffect(() => {
+    return () => stopCurrentAudio();
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -74,8 +101,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
         try {
           const res = await api.post('/chat/', { message: `ANUNCIO_NOTIFICACIONES: ${msg}`, session_id: sessionId });
           if (res.data.audio_base64) {
-             const audio = new Audio(`data:audio/mp3;base64,${res.data.audio_base64}`);
-             audio.play().catch(e => console.warn("Autoplay blocked:", e));
+             playAudioResponse(res.data.audio_base64);
           }
         } catch (e) {
           console.error("Error announcing notifications:", e);
@@ -90,6 +116,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
     if (!voiceBlob && !textMsg) return;
     if (loading) return;
 
+    stopCurrentAudio();
     setLoading(true);
     const newMessages = [...messages];
     if (textMsg) {
@@ -113,9 +140,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
         newMessages.push({ role: 'assistant', content: response });
         
         // Robust Playback
-        const audioUrl = `data:audio/mp3;base64,${audio_base64}`;
-        const audio = new Audio(audioUrl);
-        audio.play().catch(e => console.warn("Autoplay blocked:", e));
+        playAudioResponse(audio_base64);
       } else {
         const res = await api.post('/chat/', { message: textMsg, session_id: sessionId });
         const { response, audio_base64 } = res.data;
@@ -123,9 +148,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
         
         // Always play audio if available (even for text/career clicks)
         if (audio_base64) {
-          const audioUrl = `data:audio/mp3;base64,${audio_base64}`;
-          const audio = new Audio(audioUrl);
-          audio.play().catch(e => console.warn("Autoplay blocked:", e));
+          playAudioResponse(audio_base64);
         }
       }
       setMessages([...newMessages]);
@@ -139,6 +162,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
 
   const startRecording = async () => {
     try {
+      stopCurrentAudio();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
       const chunks: Blob[] = [];
@@ -213,7 +237,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
                 </div>
               </div>
               <button 
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  stopCurrentAudio();
+                  setIsOpen(false);
+                }}
                 className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
                 aria-label="Cerrar chat"
               >

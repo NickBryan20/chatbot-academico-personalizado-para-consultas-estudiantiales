@@ -14,6 +14,9 @@ OFFICIAL_RAG_URLS = [
     'https://www.pucesi.edu.ec/webs2/index.php/campus-virtual-puce-ibarra/',
     'https://www.pucesi.edu.ec/webs2/index.php/horarios-estudiantiles-2026-01/',
     'https://www.pucesi.edu.ec/webs2/index.php/preguntas-frecuentes/',
+    'https://www.pucesi.edu.ec/webs2/tourvirtual/',
+    'https://www.pucesi.edu.ec/webs2/index.php/biblioteca-2/',
+    'https://www.pucesi.edu.ec/webs2/index.php/normativa/',
 ]
 
 def extract_urls(file_path):

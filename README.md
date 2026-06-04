@@ -31,6 +31,7 @@ El Chatbot no es un LLM genérico. Su comportamiento se rige por la arquitectura
 - **Scraping Automático:** Se ejecuta un *scraper* web en el backend (`scrape_rag_links.py`) que absorbe contenido de la web oficial de PUCE-SI y lo inyecta a los documentos base.
 - **Motor Vectorial (FAISS):** Los documentos se dividen en *chunks* y se convierten en vectores semánticos (Embeddings de OpenAI). Al hacer una pregunta, el sistema busca los vectores más relevantes antes de generar una respuesta.
 - **Jerarquía de fuentes:** Los documentos validados del proyecto tienen prioridad para reglas académicas del prototipo; la web oficial de PUCE-SI se usa para información pública cambiante como admisiones, horarios y oferta académica.
+- **Mapa y servicios del campus:** El documento `campus_mapa_servicios.txt` aporta ubicación de edificios, aulas, biblioteca, bar/cafetería, copias, tesorería, secretaría, carnet institucional y reglas de calificación.
 - **Contexto Personalizado:** Si el usuario ha iniciado sesión, el backend *inyecta* silenciosamente su historial de notas, asistencias, deberes pendientes y horarios en el *prompt* maestro del LLM. Así, el bot sabe exactamente con quién está hablando.
 
 ---
