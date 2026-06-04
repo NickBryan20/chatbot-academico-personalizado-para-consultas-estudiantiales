@@ -15,6 +15,7 @@ dist/
 .tox/
 .nox/
 .hypothesis/
+.venv*/
 
 # Django
 *.log
