@@ -15,44 +15,83 @@ import {
 
 const campusZones = [
   {
+    id: 'sports',
+    title: 'Estadio y canchas',
+    detail: 'Zona deportiva',
+    services: ['Estadio', 'Basket', 'Vóley'],
+    icon: Trophy,
+    className: 'left-[6%] top-[24%] w-[21%] h-[33%] bg-green-700',
+  },
+  {
     id: 'building-1',
     title: 'Edificio 1',
     detail: 'Acceso estudiantil',
-    services: ['Dirección Estudiantes', 'Bar / cafetería', 'A-101', 'A-102'],
+    services: ['Dirección Estudiantes', 'Bar / cafetería', 'Ingreso 1'],
     icon: Building2,
-    className: 'left-[10%] top-[18%] w-[23%] h-[22%] bg-sky-600',
+    className: 'right-[11%] bottom-[18%] w-[19%] h-[19%] bg-yellow-500',
   },
   {
     id: 'building-2',
-    title: 'Edificio 2',
-    detail: 'ECOMS / Gestiones',
-    services: ['Carnet institucional', 'B-101', 'B-105'],
+    title: 'Edificio / Bloque 2',
+    detail: 'Carnet, aulas y gastronomía',
+    services: ['Carnet', '5.1.10', 'Taller gastronomía'],
     icon: GraduationCap,
-    className: 'left-[38%] top-[12%] w-[21%] h-[24%] bg-indigo-700',
+    className: 'left-[48%] top-[31%] w-[18%] h-[19%] bg-rose-600',
   },
   {
     id: 'building-3',
     title: 'Edificio 3',
-    detail: 'Ingeniería / Idiomas',
-    services: ['Copias', 'Laboratorios', 'C-301', 'LAB-01'],
+    detail: 'Laboratorios / copias',
+    services: ['Copias', 'Laboratorios', '3.3.1'],
     icon: Monitor,
-    className: 'right-[9%] top-[19%] w-[24%] h-[23%] bg-emerald-700',
+    className: 'left-[43%] bottom-[17%] w-[14%] h-[19%] bg-cyan-600',
   },
   {
     id: 'building-4',
     title: 'Edificio 4',
     detail: 'Biblioteca / servicios',
-    services: ['Biblioteca', 'Bar / cafetería', 'Secretaría', 'Tesorería'],
+    services: ['Biblioteca', 'Bar / cafetería', 'Ingreso 4'],
     icon: Wallet,
-    className: 'left-[17%] bottom-[16%] w-[30%] h-[25%] bg-amber-600',
+    className: 'left-[24%] bottom-[12%] w-[22%] h-[23%] bg-violet-700',
   },
   {
     id: 'building-5',
-    title: 'Edificio 5 / Deportes',
-    detail: 'Zona deportiva derecha',
-    services: ['Estadio', 'Basket', 'Vóley'],
-    icon: Trophy,
-    className: 'right-[12%] bottom-[15%] w-[27%] h-[23%] bg-slate-700',
+    title: 'Edificio 5',
+    detail: 'Ingreso 5',
+    services: ['5.1.x', '5.2.x', 'Bloque 2'],
+    icon: Building2,
+    className: 'left-[49%] top-[12%] w-[18%] h-[17%] bg-orange-600',
+  },
+  {
+    id: 'block-3',
+    title: 'Bloque 3',
+    detail: 'ECAA / investigación',
+    services: ['Ing.', 'Germoplasma', 'Herbario'],
+    icon: Landmark,
+    className: 'left-[31%] top-[34%] w-[15%] h-[16%] bg-lime-600',
+  },
+];
+
+const roomGuide = [
+  {
+    title: 'Edificio 1',
+    lines: ['P1: 1.1.5, 1.1.6, 1.1.7', 'P2: 1.2.2, 1.2.3, 1.2.7, 1.2.8', 'P3-P6: aulas 1.3.x, 1.4.x, 1.5.x y 1.6.x'],
+  },
+  {
+    title: 'Edificio 3',
+    lines: ['P1 y P2: laboratorios', 'P3: laboratorios y aula 3.3.1'],
+  },
+  {
+    title: 'Edificio 4',
+    lines: ['P1: laboratorios de enfermería y biblioteca', 'P2: laboratorios ECAA, biblioteca y aula 4.2.12', 'P3: aulas 4.3.5 a 4.3.18'],
+  },
+  {
+    title: 'Edificio 5 / Bloque 2',
+    lines: ['Edificio 5: aulas 5.1.x y 5.2.x', 'Bloque 2: 5.1.10, 5.1.11, 5.0.1, 5.0.2, 5.0.3', 'Taller de gastronomía: 2.1.31'],
+  },
+  {
+    title: 'Bloque 3',
+    lines: ['P1: laboratorio de ingeniería, germoplasma y herbario'],
   },
 ];
 
@@ -77,15 +116,26 @@ const CampusMapSection: React.FC = () => {
             <p className="text-sm font-semibold text-[#0033A0]">Campus PUCE Ibarra</p>
             <h2 className="mt-1 text-3xl font-bold text-[#1f2937]">Mapa del campus y servicios</h2>
           </div>
-          <a
-            href="https://www.pucesi.edu.ec/webs2/tourvirtual/"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 self-start rounded-md bg-[#0033A0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00277a] md:self-auto"
-          >
-            <MapPin size={17} />
-            Tour virtual oficial
-          </a>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href="https://www.pucesi.edu.ec/webs2/tourvirtual/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0033A0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00277a]"
+            >
+              <MapPin size={17} />
+              Tour virtual oficial
+            </a>
+            <a
+              href="https://www.pucesi.edu.ec/webs2/index.php/horarios-estudiantiles-2026-01/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-[#0033A0] px-4 py-2 text-sm font-semibold text-[#0033A0] transition-colors hover:bg-[#e6f7fd]"
+            >
+              <BookOpen size={17} />
+              Horarios 2026-01
+            </a>
+          </div>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
@@ -115,13 +165,20 @@ const CampusMapSection: React.FC = () => {
             })}
           </div>
 
-          <div className="relative hidden min-h-[520px] overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm md:block">
+          <div className="relative hidden min-h-[640px] overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm md:block">
+            <div className="absolute left-0 right-0 top-0 z-30 bg-[#00AEEF] px-5 py-3 text-center text-sm font-bold text-white">
+              El campus crece y se renueva pensando en ti
+            </div>
             <div className="absolute inset-6 rounded-md border-2 border-dashed border-slate-300" />
-            <div className="absolute left-[6%] top-1/2 h-8 w-[88%] -translate-y-1/2 rounded-full bg-slate-200" />
-            <div className="absolute left-1/2 top-[8%] h-[84%] w-8 -translate-x-1/2 rounded-full bg-slate-200" />
-            <div className="absolute left-8 top-1/2 z-10 -translate-y-1/2 rounded-md bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm">
+            <div className="absolute left-[7%] top-[62%] h-8 w-[78%] -translate-y-1/2 rounded-full bg-slate-200" />
+            <div className="absolute left-[55%] top-[20%] h-[58%] w-8 -translate-x-1/2 rounded-full bg-slate-200" />
+            <div className="absolute bottom-6 left-8 z-20 rounded-md bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm">
               Acceso principal
             </div>
+            <div className="absolute bottom-12 left-[23%] z-20 rounded-full bg-violet-100 px-3 py-2 text-xs font-bold text-violet-800 shadow-sm">Ingreso 4</div>
+            <div className="absolute bottom-10 left-[43%] z-20 rounded-full bg-cyan-100 px-3 py-2 text-xs font-bold text-cyan-800 shadow-sm">Ingreso 3</div>
+            <div className="absolute right-[7%] top-[32%] z-20 rounded-full bg-orange-100 px-3 py-2 text-xs font-bold text-orange-800 shadow-sm">Ingreso 5</div>
+            <div className="absolute bottom-4 left-[4%] z-20 rounded-full bg-green-100 px-3 py-2 text-xs font-bold text-green-800 shadow-sm">Ingreso ECAA</div>
 
             {campusZones.map((zone) => {
               const Icon = zone.icon;
@@ -149,7 +206,7 @@ const CampusMapSection: React.FC = () => {
             })}
 
             <div className="absolute bottom-5 left-6 right-6 z-20 rounded-md bg-white/95 px-4 py-3 text-sm text-slate-700 shadow-sm">
-              La capilla está pasando la entrada principal. El estadio queda camino al Edificio 5, hacia la derecha, junto a las canchas de basket y vóley.
+              Sigue las rutas señalizadas: los accesos y ubicaciones han cambiado temporalmente por obras en ejecución.
             </div>
           </div>
 
@@ -174,6 +231,22 @@ const CampusMapSection: React.FC = () => {
             <p className="mt-5 rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-900">
               Para aulas exactas usa el código de tu horario. El chatbot responderá con estas ubicaciones del campus y, si hay cambios operativos, sugerirá confirmar en garita.
             </p>
+
+            <div className="mt-5 border-t border-slate-100 pt-5">
+              <h3 className="text-lg font-bold text-[#1f2937]">Aulas por edificio</h3>
+              <div className="mt-4 space-y-4">
+                {roomGuide.map((group) => (
+                  <div key={group.title}>
+                    <p className="text-sm font-bold text-slate-800">{group.title}</p>
+                    <ul className="mt-1 space-y-1 text-sm text-slate-600">
+                      {group.lines.map((line) => (
+                        <li key={line}>{line}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

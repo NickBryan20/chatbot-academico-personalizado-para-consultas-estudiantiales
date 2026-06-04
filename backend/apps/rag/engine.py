@@ -42,6 +42,7 @@ class RAGEngine:
             'informacion_institucional.txt',
             'puce_ibarra_info.txt',
             'campus_mapa_servicios.txt',
+            'horarios_prerrequisitos_2026_01.txt',
         }:
             return 3
         if source == 'scraped_web_content.txt':

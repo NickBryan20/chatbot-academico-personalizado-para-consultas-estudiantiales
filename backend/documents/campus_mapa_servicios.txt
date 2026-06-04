@@ -16,6 +16,8 @@ FUENTES DE REFERENCIA
 MAPA GENERAL DEL CAMPUS
 La direccion general del campus es Av. Jorge Guzman Rueda y Av. Aurelio Espinosa Polit, ciudadela La Victoria, Ibarra.
 El tour virtual oficial organiza el campus en edificios PUCESI y puntos estrategicos.
+Mapa temporal de campus: "El campus crece y se renueva pensando en ti". El estudiante debe seguir las rutas senalizadas para llegar a cada area. Los accesos y ubicaciones han cambiado temporalmente por obras en ejecucion.
+Ingresos senalizados en el mapa: Ingreso ECAA, Ingreso 4, Ingreso 3, Ingreso 1 e Ingreso 5.
 
 PUNTOS ESTRATEGICOS DEL CAMPUS
 - Biblioteca PUCE Ibarra: se ubica dentro del Edificio 4. Atiende consulta bibliografica, biblioteca virtual, bases digitales, hemeroteca y apoyo a investigacion. Horario oficial de referencia publicado: lunes a viernes de 07:00 a 21:00 y sabados de 08:00 a 13:00. Extensiones: 1313, 1314 y 1315.
@@ -32,6 +34,35 @@ DISTRIBUCION POR EDIFICIOS VALIDADA PARA EL PROTOTIPO
 - Edificio 3: punto de referencia para copias, impresion, laboratorios, Ingenieria, Ciencias de la Computacion y Centro de Idiomas. Aulas/laboratorios asociados: C-301, LAB-01, LAB-02, LAB-03, LAB-1 y LAB-2.
 - Edificio 4: punto de referencia para Biblioteca PUCE Ibarra, bar/cafeteria, Secretaria General, Tesoreria, Sala de Grados y servicios administrativos.
 - Edificio 5 / zona deportiva: al dirigirse hacia el Edificio 5, a la derecha se encuentra el estadio junto a las canchas de basket y voley.
+
+DETALLE DE AULAS Y PISOS SEGUN MAPA DE CAMPUS
+- Edificio 1:
+  - Piso 1: 1.1.5, 1.1.6, 1.1.7.
+  - Piso 2: 1.2.2, 1.2.3, 1.2.7, 1.2.8.
+  - Piso 3: 1.3.2, 1.3.3, 1.3.5, 1.3.6, 1.3.7.
+  - Piso 4: 1.4.2, 1.4.3, 1.4.4, 1.4.6, 1.4.7.
+  - Piso 5: 1.5.1, 1.5.2, 1.5.3, 1.5.4.
+  - Piso 6: 1.6.1, 1.6.3.
+- Edificio 3:
+  - Piso 1: laboratorios.
+  - Piso 2: laboratorios.
+  - Piso 3: laboratorios y aula 3.3.1.
+- Edificio 4:
+  - Piso 1: laboratorios de enfermeria y biblioteca.
+  - Piso 2: laboratorios ECAA, biblioteca y aula 4.2.12.
+  - Piso 3: 4.3.5, 4.3.9, 4.3.10, 4.3.11, 4.3.12, 4.3.13, 4.3.14, 4.3.15, 4.3.16, 4.3.17, 4.3.18.
+- Edificio 5:
+  - Planta baja: 5.1.1, 5.1.2, 5.1.3.
+  - Planta alta: 5.2.1, 5.2.2, 5.2.3.
+  - Planta baja: 5.1.4, 5.1.5, 5.1.6, 5.1.7.
+  - Planta alta: 5.2.4, 5.2.5, 5.2.6, 5.2.7.
+  - Planta baja: 5.1.8, 5.1.9.
+- Bloque 2:
+  - Planta baja: 5.1.10, 5.1.11.
+  - Planta baja: 5.0.1, 5.0.2, 5.0.3.
+  - Planta baja: Taller de Gastronomia y aula 2.1.31.
+- Bloque 3:
+  - Piso 1: Laboratorio de Ingenieria, Germoplasma y Herbario.
 
 AULAS REGISTRADAS EN EL PROTOTIPO
 - A-101: Bloque A / Edificio A, piso 1, capacidad 30.

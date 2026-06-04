@@ -1,0 +1,63 @@
+PUCESI - HORARIOS Y PRERREQUISITOS 2026-01
+Documento validado para el prototipo del Chatbot Academico PUCESI.
+
+FUENTE OFICIAL
+- Pagina oficial: https://www.pucesi.edu.ec/webs2/index.php/horarios-estudiantiles-2026-01/
+- Titulo de la pagina: Horarios y prerrequisitos.
+- Periodo academico: 2026-01, marzo-julio 2026.
+
+USO PARA EL CHATBOT
+- Si el estudiante esta autenticado y pregunta por su horario personal, usar primero el horario registrado en la base de datos del prototipo.
+- Si el usuario pregunta por horarios oficiales de una carrera, prerrequisitos, NRC, aulas oficiales publicadas o PDFs de la universidad, responder que la fuente oficial es la pagina "Horarios Estudiantiles 2026-01" y entregar el enlace.
+- No inventar prerrequisitos especificos de una asignatura si el PDF oficial no esta en el contexto recuperado. En ese caso, indicar que debe abrir el PDF de su carrera en la pagina oficial.
+- Si el usuario pide "horarios y prerrequisitos", explicar que la pagina contiene PDFs por escuela/carrera y por materias comunes/humanisticas.
+- Si hay conflicto entre la base de datos del prototipo y la pagina oficial, para el horario personal del estudiante autenticado se usa la base local; para informacion publica oficial se usa la pagina PUCESI.
+
+CONTENIDO PUBLICADO EN LA PAGINA OFICIAL
+La pagina oficial agrupa horarios de clase y prerrequisitos por escuela y carrera para el periodo academico 2026-01.
+
+ESCUELAS Y BLOQUES DISPONIBLES
+- Escuela de Ciencias Agropecuarias y Ambientales.
+- Escuela de Ciencias Administrativas y Economicas.
+- Escuela de Salud Integral.
+- Escuela de Ciencias Sociales y Humanidades.
+- Escuela Habitat, Infraestructura y Creatividad.
+- Materias comunes: Contextos e Interculturalidad y Fundamentos de Investigacion.
+- Materias humanisticas: Jesucristo y la Persona de Hoy; Etica Personal y Socioambiental.
+
+CARRERAS Y DOCUMENTOS REFERENCIADOS EN LA PAGINA
+- Agropecuaria: horarios y prerrequisitos.
+- Ingenieria Ambiental: horarios y prerrequisitos.
+- Medicina Veterinaria: horarios y prerrequisitos.
+- Agronomia: horarios y prerrequisitos.
+- Zootecnia: horarios y prerrequisitos, pensum 2019 y 2024.
+- Administracion de Empresas: horarios y prerrequisitos, pensum 2019 y 2024.
+- Comercio Internacional: horarios y prerrequisitos.
+- Contabilidad y Auditoria: horarios y prerrequisitos.
+- Negocios Internacionales: horarios y prerrequisitos, pensum 2019 y 2024.
+- Auditoria / gestion contable: horarios y prerrequisitos publicados en el bloque administrativo.
+- Gastronomia: horarios y prerrequisitos, pensum 2019 y 2024.
+- Turismo: horarios y prerrequisitos.
+- Licenciatura en Enfermeria: horarios y prerrequisitos.
+- Pedagogia de los Idiomas Nacionales y Extranjeros / PIME: horarios y prerrequisitos, pensum 2019 no repotenciada y 2024 repotenciada.
+- Derecho: horarios y prerrequisitos, pensum 2020 y 2024 repotenciado.
+- Ingenieria Civil: horarios y prerrequisitos, pensum 2022 y 2024 repotenciado.
+- Arquitectura: horarios y prerrequisitos, pensum 2019 y 2024 repotenciado.
+- Tecnologias de la Informacion: horarios y prerrequisitos, pensum 2019.
+- Ingenieria en Desarrollo de Software: horarios y prerrequisitos, pensum 2024 repotenciado.
+- Diseno Grafico: horarios y prerrequisitos, pensum 2019 y 2024 repotenciado.
+- Tronco comun Ingenieria Civil y Software: horarios y prerrequisitos, pensum 2024.
+- Tronco comun Arquitectura y Diseno Grafico: horarios y prerrequisitos, pensum 2024.
+- Contextos e Interculturalidad: horarios y prerrequisitos.
+- Fundamentos de Investigacion: horarios y prerrequisitos.
+- Materias humanisticas de grado: horarios y prerrequisitos para pensum 2019 y 2024.
+
+COMO RESPONDER PREGUNTAS FRECUENTES
+- Pregunta: "Donde veo los horarios oficiales 2026-01?"
+  Respuesta esperada: "Los horarios oficiales del periodo 2026-01 estan en la pagina de Horarios Estudiantiles 2026-01 de PUCESI: https://www.pucesi.edu.ec/webs2/index.php/horarios-estudiantiles-2026-01/"
+- Pregunta: "Donde veo prerrequisitos de Software?"
+  Respuesta esperada: "En la pagina oficial de Horarios Estudiantiles 2026-01, dentro del bloque de Escuela Habitat, Infraestructura y Creatividad, busca Ingenieria en Desarrollo de Software y abre el PDF de prerrequisitos."
+- Pregunta: "Cual es mi horario?"
+  Respuesta esperada si esta autenticado: usar el horario de la base de datos del estudiante. Si no esta autenticado, pedir iniciar sesion o remitir a la pagina oficial.
+- Pregunta: "Que es un NRC?"
+  Respuesta esperada: "El NRC es el codigo de registro de una asignatura o paralelo usado para matricula y horarios; en los PDFs oficiales aparece junto a materia, paralelo, aula y horario."

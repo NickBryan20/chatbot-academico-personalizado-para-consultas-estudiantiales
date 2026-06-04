@@ -8,7 +8,7 @@ Este directorio contiene el servidor principal del prototipo de tesis. Está des
 - 10 modelos principales en la base de datos
 - Más de 20 endpoints API expuestos entre autenticación, estudiantes, docentes, chatbot, RAG, voz y auditoría
 - 13 acciones de auditoría definidas en `apps/audit_logs/models.py`
-- 4 documentos institucionales de conocimiento en `backend/documents/`
+- 5 documentos institucionales de conocimiento en `backend/documents/`
 - 1 índice FAISS en `backend/rag_index/faiss_index`
 
 ## 🗂️ Estructura de Módulos (Apps)
@@ -64,6 +64,7 @@ Este directorio contiene el servidor principal del prototipo de tesis. Está des
   - `informacion_institucional.txt`
   - `puce_ibarra_info.txt`
   - `campus_mapa_servicios.txt`
+  - `horarios_prerrequisitos_2026_01.txt`
   - `scraped_web_content.txt`
 - `Estudiantes_Prueba.txt` se mantiene fuera del RAG y de GitHub porque contiene datos locales de prueba.
 - Motor FAISS localizado en `backend/rag_index/faiss_index`
@@ -81,7 +82,7 @@ Este directorio contiene el servidor principal del prototipo de tesis. Está des
 
 ### Métricas relevantes de RAG
 
-- 4 archivos institucionales de conocimiento fuente.
+- 5 archivos institucionales de conocimiento fuente.
 - 1 índice vectorial persistente en disco.
 - 1 script de reconstrucción para mantener el índice actualizado.
 - 1 servicio que combina búsqueda semántica con contexto académico.
