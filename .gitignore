@@ -1,0 +1,75 @@
+# ===== PYTHON / DJANGO =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+build/
+dist/
+*.egg-info/
+.eggs/
+.tox/
+.nox/
+.hypothesis/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+backend/urls_debug.html
+media/
+staticfiles/
+
+# Migrations (keep track but not data)
+# backend/apps/*/migrations/  # Uncommment if you prefer not to track migrations
+
+# ===== ENVIRONMENT VARIABLES (CRITICAL) =====
+.env
+.env.local
+.env.production
+.env.staging
+*.env
+
+# ===== FAISS INDEX (can be regenerated) =====
+backend/rag_index/
+*.faiss
+*.pkl
+
+# Local demo credentials / private test data
+backend/documents/Estudiantes_Prueba.txt
+
+# ===== NODE / REACT =====
+node_modules/
+dist/
+build/
+.next/
+out/
+.nuxt/
+frontend/.env
+frontend/.env.local
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ===== TESTING =====
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+*.cover
+
+# ===== SECURITY =====
+*.pem
+*.key
+*.cert
+secrets/
