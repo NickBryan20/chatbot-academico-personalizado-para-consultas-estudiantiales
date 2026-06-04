@@ -2,7 +2,6 @@
 Motor RAG (Retrieval-Augmented Generation) para el chatbot académico PUCESI.
 Maneja la carga, fragmentación, embeddings y búsqueda semántica de documentos.
 """
-import os
 import logging
 import pickle
 from typing import List, Tuple
@@ -37,6 +36,48 @@ class RAGEngine:
         """Archivos locales que no deben entrar al RAG ni ser recuperados."""
         return set(getattr(settings, 'RAG_EXCLUDED_SOURCE_FILES', []))
 
+    def _source_priority(self, source: str) -> int:
+        """Prioriza documentos curados del proyecto sobre scraping web cambiante."""
+        if source in {'informacion_institucional.txt', 'puce_ibarra_info.txt'}:
+            return 3
+        if source == 'scraped_web_content.txt':
+            return 2
+        return 1
+
+    def _source_type(self, source: str) -> str:
+        if self._source_priority(source) >= 3:
+            return 'documento_validado'
+        if source == 'scraped_web_content.txt':
+            return 'web_oficial_pucesi'
+        return 'documento'
+
+    def _documents_latest_mtime(self) -> float:
+        docs_path = Path(settings.DOCUMENTS_PATH)
+        if not docs_path.exists():
+            return 0.0
+        excluded_sources = self._excluded_sources()
+        mtimes = [
+            file_path.stat().st_mtime
+            for file_path in docs_path.glob('**/*.txt')
+            if file_path.name not in excluded_sources
+        ]
+        return max(mtimes, default=0.0)
+
+    def _load_existing_index(self, index_path: Path, chunks_path: Path, metadata_path: Path) -> bool:
+        import faiss
+
+        if not (index_path.exists() and chunks_path.exists() and metadata_path.exists()):
+            return False
+
+        logger.info("Cargando índice FAISS existente...")
+        self._index = faiss.read_index(str(index_path))
+        with open(chunks_path, 'rb') as f:
+            self._chunks = pickle.load(f)
+        with open(metadata_path, 'rb') as f:
+            self._metadata = pickle.load(f)
+        logger.info(f"Índice cargado: {len(self._chunks)} chunks")
+        return True
+
     def _get_embedding(self, text: str) -> List[float]:
         """Genera embedding para un texto usando OpenAI."""
         client = self.get_client()
@@ -69,15 +110,16 @@ class RAGEngine:
         chunks_path = index_path.parent / 'chunks.pkl'
         metadata_path = index_path.parent / 'metadata.pkl'
 
-        # Cargar índice existente si no se fuerza reconstrucción
-        if not force_rebuild and index_path.exists() and chunks_path.exists():
-            logger.info("Cargando índice FAISS existente...")
-            self._index = faiss.read_index(str(index_path))
-            with open(chunks_path, 'rb') as f:
-                self._chunks = pickle.load(f)
-            with open(metadata_path, 'rb') as f:
-                self._metadata = pickle.load(f)
-            logger.info(f"Índice cargado: {len(self._chunks)} chunks")
+        index_is_fresh = (
+            index_path.exists()
+            and chunks_path.exists()
+            and metadata_path.exists()
+            and index_path.stat().st_mtime >= self._documents_latest_mtime()
+        )
+
+        # Cargar índice existente si no se fuerza reconstrucción y está actualizado.
+        if not force_rebuild and index_is_fresh:
+            self._load_existing_index(index_path, chunks_path, metadata_path)
             return
 
         # Construir desde cero
@@ -154,6 +196,8 @@ class RAGEngine:
                         all_chunks.append(chunk)
                         all_metadata.append({
                             'source': file_path.name,
+                            'source_type': self._source_type(file_path.name),
+                            'priority': self._source_priority(file_path.name),
                             'chunk_index': j,
                             'total_chunks': len(chunks),
                         })
@@ -209,7 +253,18 @@ class RAGEngine:
 
         if self._index is None:
             logger.warning("Índice RAG no construido. Intentando cargar...")
-            self.build_index()
+            try:
+                self.build_index()
+            except Exception as e:
+                logger.error(f"No se pudo reconstruir el índice RAG: {e}")
+                index_path = Path(settings.FAISS_INDEX_PATH)
+                loaded = self._load_existing_index(
+                    index_path,
+                    index_path.parent / 'chunks.pkl',
+                    index_path.parent / 'metadata.pkl',
+                )
+                if not loaded:
+                    return []
             if self._index is None:
                 return []
 
@@ -220,8 +275,9 @@ class RAGEngine:
         query_embedding = np.array([self._get_embedding(query)], dtype=np.float32)
         faiss.normalize_L2(query_embedding)
 
-        # Buscar en el índice
-        scores, indices = self._index.search(query_embedding, top_k)
+        # Buscar más candidatos y luego reordenar por prioridad documental + similitud.
+        search_k = min(max(top_k * 4, top_k), len(self._chunks))
+        scores, indices = self._index.search(query_embedding, search_k)
 
         results = []
         for score, idx in zip(scores[0], indices[0]):
@@ -230,12 +286,18 @@ class RAGEngine:
             source = self._metadata[idx]['source'] if self._metadata else 'desconocido'
             if source in self._excluded_sources():
                 continue
+            priority = self._source_priority(source)
             results.append({
                 'content': self._chunks[idx],
                 'score': float(score),
+                'weighted_score': float(score) + (priority * 0.05),
                 'source': source,
+                'source_type': self._source_type(source),
+                'priority': priority,
             })
 
+        results.sort(key=lambda item: item['weighted_score'], reverse=True)
+        results = results[:top_k]
         logger.debug(f"RAG search: {len(results)} resultados para '{query[:50]}'")
         return results
 
@@ -247,7 +309,7 @@ class RAGEngine:
         context_parts = []
         for i, result in enumerate(results, 1):
             context_parts.append(
-                f"[Fuente {i}: {result['source']}]\n{result['content']}"
+                f"[Fuente {i}: {result['source']} | tipo={result.get('source_type', 'documento')}]\n{result['content']}"
             )
 
         return "\n\n---\n\n".join(context_parts)

@@ -45,7 +45,7 @@ const LoginPage: React.FC = () => {
         // Direct Login Success
         const { user, access, refresh } = response.data;
         setAuth(user, access, refresh);
-        navigate('/dashboard');
+        navigate(user.role === 'teacher' ? '/teacher' : '/dashboard');
       }
     } catch (err: any) {
       const errorData = err.response?.data?.error;
@@ -78,7 +78,7 @@ const LoginPage: React.FC = () => {
 
       const { user, access, refresh } = response.data;
       setAuth(user, access, refresh);
-      navigate('/dashboard');
+      navigate(user.role === 'teacher' ? '/teacher' : '/dashboard');
     } catch (err: any) {
       const errorData = err.response?.data?.error;
       let message = 'Código incorrecto o expirado.';

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import AutoServicioBannerPage from './pages/AutoServicioBannerPage';
 import BolsaEmpleoPage from './pages/BolsaEmpleoPage';
+import TeacherDashboard from './pages/TeacherDashboard';
 
 function App() {
   return (
@@ -20,10 +21,18 @@ function App() {
         <Route 
           path="/dashboard" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['student', 'admin']}>
               <Dashboard />
             </ProtectedRoute>
           } 
+        />
+        <Route
+          path="/teacher"
+          element={
+            <ProtectedRoute allowedRoles={['teacher']}>
+              <TeacherDashboard />
+            </ProtectedRoute>
+          }
         />
 
         {/* Fallback */}

@@ -5,6 +5,17 @@ from bs4 import BeautifulSoup
 import time
 from urllib.parse import urlparse
 
+OFFICIAL_RAG_URLS = [
+    'https://www.pucesi.edu.ec/webs2/',
+    'https://www.pucesi.edu.ec/webs2/index.php/grados/',
+    'https://www.pucesi.edu.ec/webs2/index.php/posgrados/',
+    'https://www.pucesi.edu.ec/webs2/index.php/admisiones-grado-presencial/',
+    'https://www.pucesi.edu.ec/webs2/index.php/examen-de-admision/',
+    'https://www.pucesi.edu.ec/webs2/index.php/campus-virtual-puce-ibarra/',
+    'https://www.pucesi.edu.ec/webs2/index.php/horarios-estudiantiles-2026-01/',
+    'https://www.pucesi.edu.ec/webs2/index.php/preguntas-frecuentes/',
+]
+
 def extract_urls(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         text = f.read()
@@ -66,9 +77,8 @@ def main():
     source_file = os.path.join(base_dir, 'documents', 'puce_ibarra_info.txt')
     output_file = os.path.join(base_dir, 'documents', 'scraped_web_content.txt')
     
-    urls = extract_urls(source_file)
-    # Remove duplicates
-    urls = list(set(urls))
+    urls = extract_urls(source_file) + OFFICIAL_RAG_URLS
+    urls = sorted(set(urls))
     
     valid_urls = [url for url in urls if is_valid_url(url)]
     print(f"Se encontraron {len(valid_urls)} URLs válidas para procesar.")

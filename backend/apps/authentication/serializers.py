@@ -1,14 +1,7 @@
 """
 Serializers para autenticación: login, OTP, registro.
 """
-import random
-import string
-from datetime import timedelta
-
-from django.contrib.auth import authenticate
-from django.utils import timezone
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User, OTPToken
 from apps.audit_logs.services import AuditLogService
@@ -81,9 +74,13 @@ class OTPVerifySerializer(serializers.Serializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """Información del usuario autenticado."""
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name',
-                  'is_2fa_enabled', 'last_login', 'created_at']
+                  'role', 'is_2fa_enabled', 'last_login', 'created_at']
         read_only_fields = fields
+
+    def get_role(self, obj):
+        return obj.effective_role

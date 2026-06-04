@@ -71,10 +71,14 @@ class ActivitySubmissionSerializer(serializers.ModelSerializer):
 class ActivitySerializer(serializers.ModelSerializer):
     subject_name = serializers.ReadOnlyField(source='subject.name')
     submission = serializers.SerializerMethodField()
+    submissions_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Activity
-        fields = ['id', 'subject', 'subject_name', 'title', 'description', 'due_date', 'file', 'created_at', 'submission']
+        fields = [
+            'id', 'subject', 'subject_name', 'title', 'description',
+            'due_date', 'file', 'created_at', 'submission', 'submissions_count'
+        ]
         
     def get_submission(self, obj):
         request = self.context.get('request')
@@ -83,3 +87,14 @@ class ActivitySerializer(serializers.ModelSerializer):
             if submission:
                 return ActivitySubmissionSerializer(submission).data
         return None
+
+    def get_submissions_count(self, obj):
+        return getattr(obj, 'submissions_count', obj.submissions.count())
+
+
+class ActivityCreateSerializer(serializers.Serializer):
+    subject = serializers.UUIDField()
+    title = serializers.CharField(max_length=200)
+    description = serializers.CharField(required=False, allow_blank=True)
+    due_date = serializers.DateTimeField()
+    file = serializers.FileField(required=False, allow_null=True)

@@ -6,7 +6,7 @@ Este directorio contiene el servidor principal del prototipo de tesis. Está des
 
 - 6 aplicaciones (`apps/`): `authentication`, `students`, `audit_logs`, `chatbot`, `rag`, `voice`
 - 10 modelos principales en la base de datos
-- 16 endpoints API expuestos en `config/urls.py`
+- Más de 20 endpoints API expuestos entre autenticación, estudiantes, docentes, chatbot, RAG, voz y auditoría
 - 13 acciones de auditoría definidas en `apps/audit_logs/models.py`
 - 3 documentos institucionales de conocimiento en `backend/documents/`
 - 1 índice FAISS en `backend/rag_index/faiss_index`
@@ -42,6 +42,7 @@ Este directorio contiene el servidor principal del prototipo de tesis. Está des
 - `Student` 1:N `Grade`
 - `Schedule` N:1 `Subject`
 - `Schedule` N:1 `Professor`
+- `Professor` 1:1 `User` para acceso docente al aula virtual
 - `Schedule` N:1 `Classroom`
 - `Enrollment` N:1 `Schedule`
 - `Grade` N:1 `Subject`
@@ -74,12 +75,12 @@ Este directorio contiene el servidor principal del prototipo de tesis. Está des
 1. Los documentos se leen desde `backend/documents/` y se vectorizan.
 2. FAISS construye un índice semántico de los fragmentos de texto.
 3. En cada consulta del chatbot, el backend ejecuta una búsqueda semántica en FAISS.
-4. Los fragmentos más relevantes se inyectan en el prompt maestro enviado a OpenAI.
+4. Los fragmentos se reordenan por prioridad: documentos validados del proyecto primero; scraping de la web oficial después.
 5. El resultado final es una respuesta contextualizada, precisa y alineada a la información institucional.
 
 ### Métricas relevantes de RAG
 
-- 4 archivos de conocimiento fuente.
+- 3 archivos institucionales de conocimiento fuente.
 - 1 índice vectorial persistente en disco.
 - 1 script de reconstrucción para mantener el índice actualizado.
 - 1 servicio que combina búsqueda semántica con contexto académico.
@@ -160,6 +161,12 @@ Registrar eventos críticos con trazabilidad forense, análisis estadístico y c
 - `GET /api/students/activities/`
 - `POST /api/students/activities/{id}/submit/`
 
+### Docentes
+- `GET /api/students/teacher/subjects/`
+- `GET /api/students/teacher/schedule/`
+- `GET /api/students/teacher/activities/`
+- `POST /api/students/teacher/activities/`
+
 ### Chatbot
 - `POST /api/chat/`
 - `GET /api/chat/history/`
@@ -171,7 +178,7 @@ Registrar eventos críticos con trazabilidad forense, análisis estadístico y c
 
 ### RAG
 - `POST /api/rag/build/`
-- `GET /api/rag/search/`
+- `POST /api/rag/search/`
 
 ### Auditoría
 - `GET /api/logs/`

@@ -11,8 +11,14 @@ from django.utils import timezone
 class User(AbstractUser):
     """Usuario extendido con campos para 2FA y seguridad."""
 
+    class Role(models.TextChoices):
+        STUDENT = 'student', 'Estudiante'
+        TEACHER = 'teacher', 'Docente'
+        ADMIN = 'admin', 'Administrador'
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True, help_text="Correo institucional @pucesi.edu.ec")
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.STUDENT)
 
     # 2FA
     is_2fa_enabled = models.BooleanField(default=True)
@@ -57,6 +63,16 @@ class User(AbstractUser):
         self.failed_login_attempts = 0
         self.account_locked_until = None
         self.save(update_fields=['failed_login_attempts', 'account_locked_until'])
+
+    @property
+    def effective_role(self):
+        if self.is_staff or self.is_superuser:
+            return self.Role.ADMIN
+        return self.role
+
+    @property
+    def is_teacher(self):
+        return self.effective_role == self.Role.TEACHER
 
 
 class OTPToken(models.Model):

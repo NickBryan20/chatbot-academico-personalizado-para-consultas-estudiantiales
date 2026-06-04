@@ -1,7 +1,8 @@
 """Controladores de negocio para el módulo de Estudiantes."""
-from django.db.models import Avg, Sum
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.db.models import Avg, Count, Sum
 from ..audit_logs.services import AuditLogService
-from .models import Student, Grade, Enrollment, Notification
+from .models import Student, Grade, Enrollment, Notification, Professor, Schedule, Subject, Activity
 
 class EstudianteControlador:
     """
@@ -136,3 +137,70 @@ class EstudianteControlador:
             
         AuditLogService.log_data_access(user, 'submit_activity', request)
         return submission
+
+    @staticmethod
+    def obtener_docente(user):
+        """Retorna el perfil docente vinculado al usuario autenticado."""
+        if not getattr(user, 'is_teacher', False):
+            raise PermissionDenied("El usuario no tiene rol docente.")
+
+        professor = Professor.objects.filter(user=user).first()
+        if not professor:
+            professor = Professor.objects.filter(email__iexact=user.email).first()
+            if professor and professor.user_id is None:
+                professor.user = user
+                professor.save(update_fields=['user'])
+
+        if not professor:
+            raise Professor.DoesNotExist("Perfil docente no encontrado.")
+        return professor
+
+    @classmethod
+    def obtener_materias_docente(cls, user):
+        professor = cls.obtener_docente(user)
+        return Subject.objects.filter(
+            schedules__professor=professor,
+            schedules__academic_period='2026-01',
+        ).distinct().order_by('semester', 'name')
+
+    @classmethod
+    def obtener_horario_docente(cls, user, period):
+        professor = cls.obtener_docente(user)
+        return Schedule.objects.filter(
+            professor=professor,
+            academic_period=period,
+        ).select_related('subject', 'professor', 'classroom').order_by('day_of_week', 'start_time')
+
+    @classmethod
+    def obtener_actividades_docente(cls, user):
+        professor = cls.obtener_docente(user)
+        subjects = Subject.objects.filter(schedules__professor=professor).distinct()
+        return Activity.objects.filter(subject__in=subjects).annotate(
+            submissions_count=Count('submissions')
+        ).select_related('subject').order_by('-created_at', 'due_date')
+
+    @classmethod
+    def crear_actividad_docente(cls, user, data, file, request):
+        professor = cls.obtener_docente(user)
+        subject_id = data.get('subject')
+        subject = Subject.objects.filter(id=subject_id).first()
+        if not subject:
+            raise ValidationError("Materia no encontrada.")
+
+        teaches_subject = Schedule.objects.filter(
+            professor=professor,
+            subject=subject,
+            academic_period='2026-01',
+        ).exists()
+        if not teaches_subject:
+            raise PermissionDenied("No puedes crear actividades para una materia que no impartes.")
+
+        activity = Activity.objects.create(
+            subject=subject,
+            title=data.get('title', '').strip(),
+            description=data.get('description', '').strip(),
+            due_date=data.get('due_date'),
+            file=file,
+        )
+        AuditLogService.log_data_access(user, 'teacher_create_activity', request)
+        return activity

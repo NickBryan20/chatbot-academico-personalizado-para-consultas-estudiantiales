@@ -33,6 +33,7 @@ from apps.students.models import (
 )
 
 DEFAULT_STUDENT_PASSWORD = settings.SEED_STUDENT_PASSWORD or secrets.token_urlsafe(12)
+DEFAULT_TEACHER_PASSWORD = settings.SEED_TEACHER_PASSWORD or secrets.token_urlsafe(12)
 
 # ─── DATOS BASE ─────────────────────────────────────────────────────────────
 
@@ -147,10 +148,28 @@ def run():
     print("\nCreando profesores...")
     profesores = []
     for first, last, email, spec in PROFESORES_DATA:
+        teacher_user, _ = User.objects.get_or_create(
+            username=email.split('@')[0],
+            defaults={
+                'email': email,
+                'first_name': first,
+                'last_name': last,
+                'password': make_password(DEFAULT_TEACHER_PASSWORD),
+                'role': User.Role.TEACHER,
+                'is_2fa_enabled': False,
+            }
+        )
+        if teacher_user.role != User.Role.TEACHER:
+            teacher_user.role = User.Role.TEACHER
+            teacher_user.save(update_fields=['role'])
+
         prof, _ = Professor.objects.get_or_create(
             email=email,
-            defaults={'first_name': first, 'last_name': last, 'specialization': spec}
+            defaults={'user': teacher_user, 'first_name': first, 'last_name': last, 'specialization': spec}
         )
+        if prof.user_id is None:
+            prof.user = teacher_user
+            prof.save(update_fields=['user'])
         profesores.append(prof)
 
     # 2. CREAR AULAS
@@ -203,6 +222,7 @@ def run():
             'first_name': 'Nick Bryan',
             'last_name': 'Lopez Reina',
             'password': make_password(DEFAULT_STUDENT_PASSWORD),
+            'role': User.Role.STUDENT,
             'is_2fa_enabled': False,
         }
     )
@@ -235,6 +255,7 @@ def run():
                 'first_name': nombre,
                 'last_name': f"{apellido1} {apellido2}",
                 'password': make_password(DEFAULT_STUDENT_PASSWORD),
+                'role': User.Role.STUDENT,
                 'is_2fa_enabled': False,
             }
         )
@@ -289,6 +310,7 @@ def run():
     print("\nUsuario de prueba principal:")
     print("   Usuario: nlopezr")
     print("   Clave:   [SEED_STUDENT_PASSWORD o clave temporal aleatoria]")
+    print("   Docente: mandrade / [SEED_TEACHER_PASSWORD o clave temporal aleatoria]")
     print("=" * 60)
 
 if __name__ == '__main__':

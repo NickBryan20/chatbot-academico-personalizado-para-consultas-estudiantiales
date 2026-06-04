@@ -29,6 +29,7 @@ from apps.students.models import (
 )
 
 DEFAULT_STUDENT_PASSWORD = settings.SEED_STUDENT_PASSWORD or secrets.token_urlsafe(12)
+DEFAULT_TEACHER_PASSWORD = settings.SEED_TEACHER_PASSWORD or secrets.token_urlsafe(12)
 DEFAULT_ADMIN_PASSWORD = settings.SEED_ADMIN_PASSWORD or secrets.token_urlsafe(12)
 
 # ─── DATOS BASE ─────────────────────────────────────────────────────────────
@@ -114,14 +115,33 @@ def run():
     print("\nCreando profesores...")
     profesores = []
     for first, last, email, spec in PROFESORES_DATA:
+        teacher_user, _ = User.objects.get_or_create(
+            username=email.split('@')[0],
+            defaults={
+                'email': email,
+                'first_name': first,
+                'last_name': last,
+                'password': make_password(DEFAULT_TEACHER_PASSWORD),
+                'role': User.Role.TEACHER,
+                'is_2fa_enabled': False,
+            }
+        )
+        if teacher_user.role != User.Role.TEACHER:
+            teacher_user.role = User.Role.TEACHER
+            teacher_user.save(update_fields=['role'])
+
         prof, created = Professor.objects.get_or_create(
             email=email,
             defaults={
+                'user': teacher_user,
                 'first_name': first,
                 'last_name': last,
                 'specialization': spec,
             }
         )
+        if prof.user_id is None:
+            prof.user = teacher_user
+            prof.save(update_fields=['user'])
         profesores.append(prof)
         if created:
             print(f"  OK: Prof. {first} {last}")
@@ -211,6 +231,7 @@ def run():
                 'first_name': nombre,
                 'last_name': f"{apellido1} {apellido2}",
                 'password': make_password(DEFAULT_STUDENT_PASSWORD),
+                'role': User.Role.STUDENT,
                 'is_2fa_enabled': True,
             }
         )
@@ -284,6 +305,7 @@ def run():
             'last_name': 'PUCESI',
             'is_staff': True,
             'is_superuser': True,
+            'role': User.Role.ADMIN,
             'is_2fa_enabled': False,
             'password': make_password(DEFAULT_ADMIN_PASSWORD),
         }
@@ -302,6 +324,7 @@ def run():
     print(f"   Horarios: {Schedule.objects.count()}")
     print("\nCredenciales de prueba:")
     print("   Estudiante: est001 / [SEED_STUDENT_PASSWORD o clave temporal aleatoria]")
+    print("   Docente:    mandrade / [SEED_TEACHER_PASSWORD o clave temporal aleatoria]")
     print("   Admin:      admin  / [SEED_ADMIN_PASSWORD o clave temporal aleatoria]")
     print("=" * 60)
 

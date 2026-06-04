@@ -193,6 +193,7 @@ DEFAULT_FROM_EMAIL = 'PUCESI Chatbot <noreply@pucesi.edu.ec>'
 OTP_EXPIRY_SECONDS = config('OTP_EXPIRY_SECONDS', default=300, cast=int)
 OTP_LENGTH = config('OTP_LENGTH', default=6, cast=int)
 SEED_STUDENT_PASSWORD = config('SEED_STUDENT_PASSWORD', default='')
+SEED_TEACHER_PASSWORD = config('SEED_TEACHER_PASSWORD', default='')
 SEED_ADMIN_PASSWORD = config('SEED_ADMIN_PASSWORD', default='')
 
 # ── OPENAI ────────────────────────────────────────────────────────────────────
