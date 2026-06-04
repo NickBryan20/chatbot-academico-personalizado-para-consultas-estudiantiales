@@ -205,8 +205,9 @@ OPENAI_TTS_VOICE = config('OPENAI_TTS_VOICE', default='nova')
 OPENAI_TTS_INSTRUCTIONS = config(
     'OPENAI_TTS_INSTRUCTIONS',
     default=(
-        'Pronuncia todo el contenido en español latinoamericano neutral, '
-        'con tono académico y natural. No cambies de idioma salvo nombres propios o materias.'
+        'Lee estrictamente en español latinoamericano neutral, con tono académico y natural. '
+        'Mantén pronunciación española incluso si el texto contiene siglas, enlaces, nombres '
+        'de carreras, materias o términos técnicos. No traduzcas ni alternes al inglés.'
     )
 )
 OPENAI_WHISPER_MODEL = config('OPENAI_WHISPER_MODEL', default='whisper-1')

@@ -52,9 +52,28 @@ class VoiceService:
         """Limpia marcas visuales y adapta siglas para pronunciación en español."""
         cleaned = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
         cleaned = re.sub(r'`([^`]*)`', r'\1', cleaned)
-        cleaned = cleaned.replace('PUCE-SI', 'PUCE Sede Ibarra')
-        cleaned = cleaned.replace('PUCESI', 'PUCE Sede Ibarra')
-        return cleaned[:500]
+        cleaned = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', cleaned)
+        cleaned = re.sub(r'https?://\S+', ' enlace oficial ', cleaned)
+
+        replacements = {
+            'PUCE-SI': 'PUCE Sede Ibarra',
+            'PUCESI': 'PUCE Sede Ibarra',
+            'FAQ': 'preguntas frecuentes',
+            'PDF': 'documento PDF',
+            'NRC': 'ene erre ce',
+            'URL': 'enlace',
+            'OTP': 'código de verificación',
+            '2FA': 'doble factor de autenticación',
+            'IA': 'inteligencia artificial',
+            'email': 'correo electrónico',
+            'e-mail': 'correo electrónico',
+            'online': 'en línea',
+        }
+        for source, target in replacements.items():
+            cleaned = re.sub(rf'\b{re.escape(source)}\b', target, cleaned, flags=re.IGNORECASE)
+
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+        return cleaned[:700]
 
     def text_to_speech(self, text: str) -> bytes:
         """
