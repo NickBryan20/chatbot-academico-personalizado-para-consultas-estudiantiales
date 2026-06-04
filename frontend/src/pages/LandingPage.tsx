@@ -10,16 +10,16 @@ const slides = [
     id: 1,
     bg: 'bg-gradient-to-r from-[#00AEEF] to-[#007AC3]',
     content: (
-      <div className="flex h-full items-center px-12 lg:px-24">
-        <div className="w-1/2">
+      <div className="grid h-full grid-cols-1 items-center gap-8 px-8 py-10 lg:grid-cols-2 lg:px-16 xl:px-20">
+        <div className="flex justify-center lg:justify-start">
           {/* Placeholder for the woman image */}
-          <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=600&q=80" alt="Estudiante" className="rounded-2xl shadow-2xl object-cover h-[400px]" />
+          <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=600&q=80" alt="Estudiante" className="h-[300px] w-full max-w-[420px] rounded-2xl object-cover shadow-2xl xl:h-[360px]" />
         </div>
-        <div className="w-1/2 text-white pl-12">
-          <h2 className="text-3xl font-light mb-2">A PARTIR DEL <span className="text-accent font-bold text-4xl block">4 de mayo</span></h2>
-          <p className="text-sm mb-8">para los estudiantes que hayan concluido su proceso de admisión</p>
-          <h1 className="text-6xl font-black leading-none mb-8">Accesos a <br/>Ventanilla <br/>ZOOM</h1>
-          <button className="bg-secondary text-white rounded-full p-4 hover:scale-105 transition-transform shadow-lg flex items-center gap-2">
+        <div className="min-w-0 text-white">
+          <h2 className="text-2xl font-light xl:text-3xl">A PARTIR DEL <span className="block text-3xl font-bold text-accent xl:text-4xl">4 de mayo</span></h2>
+          <p className="mb-6 mt-2 text-sm">para los estudiantes que hayan concluido su proceso de admisión</p>
+          <h1 className="mb-6 text-4xl font-black leading-tight xl:text-5xl">Accesos a <br/>Ventanilla <br/>ZOOM</h1>
+          <button className="flex items-center gap-2 rounded-full bg-secondary p-4 text-white shadow-lg transition-transform hover:scale-105">
             <span className="font-bold">Más Información</span>
             <ChevronRight />
           </button>
@@ -31,21 +31,21 @@ const slides = [
     id: 2,
     bg: 'bg-[#00AEEF]',
     content: (
-      <div className="flex h-full items-center px-12 lg:px-24">
-        <div className="w-1/2 text-white pr-8">
-          <h2 className="text-3xl font-bold uppercase mb-2">Admisiones</h2>
-          <h1 className="text-5xl font-black leading-tight mb-2 text-[#0033A0]">CURSO DE ADMISIÓN</h1>
-          <div className="bg-white text-secondary inline-block px-4 py-1 rounded-full text-3xl font-black mb-2">PRESENCIAL</div>
-          <h1 className="text-6xl font-outline-2 text-transparent mb-6" style={{ WebkitTextStroke: '2px white' }}>2026</h1>
+      <div className="grid h-full grid-cols-1 items-center gap-8 px-8 py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(280px,0.9fr)] lg:px-16 xl:px-20">
+        <div className="min-w-0 text-white">
+          <h2 className="mb-2 text-2xl font-bold uppercase xl:text-3xl">Admisiones</h2>
+          <h1 className="mb-2 text-4xl font-black leading-tight text-[#0033A0] xl:text-5xl">CURSO DE ADMISIÓN</h1>
+          <div className="mb-2 inline-block rounded-full bg-white px-4 py-1 text-2xl font-black text-secondary xl:text-3xl">PRESENCIAL</div>
+          <h1 className="mb-5 text-5xl text-transparent xl:text-6xl" style={{ WebkitTextStroke: '2px white' }}>2026</h1>
           
-          <div className="bg-white text-secondary font-bold px-4 py-1 inline-block mb-2 text-sm">DIRIGIDO A:</div>
-          <p className="text-sm mb-4 leading-relaxed font-medium shadow-sm">• Bachilleres y estudiantes de tercer año de bachillerato que aspiran ingresar a nuestra universidad.</p>
+          <div className="mb-2 inline-block bg-white px-4 py-1 text-sm font-bold text-secondary">DIRIGIDO A:</div>
+          <p className="mb-4 max-w-[440px] text-sm font-medium leading-relaxed shadow-sm">• Bachilleres y estudiantes de tercer año de bachillerato que aspiran ingresar a nuestra universidad.</p>
           
-          <div className="bg-white text-accent font-bold px-4 py-1 inline-block mb-2 text-sm">INSCRIPCIONES ABIERTAS HASTA:</div>
-          <p className="text-lg font-bold shadow-sm text-[#0033A0]">• Martes, 26 de mayo de 2026</p>
+          <div className="mb-2 inline-block bg-white px-4 py-1 text-sm font-bold text-accent">INSCRIPCIONES ABIERTAS HASTA:</div>
+          <p className="text-base font-bold text-[#0033A0] shadow-sm xl:text-lg">• Martes, 26 de mayo de 2026</p>
         </div>
-        <div className="w-1/2 flex justify-center">
-          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80" alt="Estudiantes" className="rounded-2xl shadow-2xl object-cover h-[400px]" />
+        <div className="flex justify-center">
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80" alt="Estudiantes" className="h-[300px] w-full max-w-[430px] rounded-2xl object-cover shadow-2xl xl:h-[400px]" />
         </div>
       </div>
     )
@@ -54,18 +54,18 @@ const slides = [
     id: 3,
     bg: 'bg-white',
     content: (
-      <div className="flex h-full items-center">
-        <div className="w-1/2 p-12 lg:p-24 text-secondary">
-          <h2 className="text-2xl font-bold mb-2">ADMISIONES</h2>
-          <h1 className="text-6xl font-black leading-tight mb-4 text-[#0056A8]">EXAMEN DE <br/>ADMISIÓN</h1>
-          <h2 className="text-5xl font-bold text-accent mb-8">PUCE-I 2026</h2>
+      <div className="grid h-full grid-cols-1 items-center lg:grid-cols-2">
+        <div className="p-8 text-secondary lg:p-16 xl:p-20">
+          <h2 className="mb-2 text-2xl font-bold">ADMISIONES</h2>
+          <h1 className="mb-4 text-4xl font-black leading-tight text-[#0056A8] xl:text-5xl">EXAMEN DE <br/>ADMISIÓN</h1>
+          <h2 className="mb-6 text-4xl font-bold text-accent xl:text-5xl">PUCE-I 2026</h2>
           
-          <div className="bg-[#0056A8] text-white p-6 rounded-tr-3xl rounded-br-3xl -ml-24 pl-24">
-            <h3 className="text-2xl font-bold text-accent mb-1">Inscripciones Abiertas</h3>
+          <div className="rounded-r-3xl bg-[#0056A8] p-5 text-white lg:-ml-16 lg:pl-16 xl:-ml-20 xl:pl-20">
+            <h3 className="mb-1 text-xl font-bold text-accent xl:text-2xl">Inscripciones Abiertas</h3>
             <p className="text-lg">• Del 14 de mayo al 15 de junio de 2026</p>
           </div>
         </div>
-        <div className="w-1/2 h-full">
+        <div className="h-full min-h-[300px]">
           <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" alt="Estudiantes en el campus" className="w-full h-full object-cover" />
         </div>
       </div>
@@ -155,10 +155,10 @@ const LandingPage: React.FC = () => {
       </nav>
 
       {/* Hero Section with Slider and Right Menu */}
-      <div id="inicio" className="flex h-[70vh] relative overflow-hidden">
+      <div id="inicio" className="relative flex min-h-[560px] overflow-hidden">
         
         {/* Slider Area (Left 75%) */}
-        <div className="w-[75%] h-full relative">
+        <div className="relative min-h-[560px] w-[75%]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
@@ -166,7 +166,7 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.5 }}
-              className={`w-full h-full ${slides[currentSlide].bg}`}
+              className={`min-h-[560px] w-full ${slides[currentSlide].bg}`}
             >
               {slides[currentSlide].content}
             </motion.div>
@@ -185,7 +185,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         {/* Right Menu (Right 25%) */}
-        <div className="w-[25%] h-full bg-[#0033A0] flex flex-col justify-center py-8">
+        <div className="flex min-h-[560px] w-[25%] flex-col justify-center bg-[#0033A0] py-8">
           <ul className="text-white space-y-2">
             {[
               { text: 'GRADO', icon: <GraduationCap size={32} /> },

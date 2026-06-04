@@ -18,17 +18,20 @@ La direccion general del campus es Av. Jorge Guzman Rueda y Av. Aurelio Espinosa
 El tour virtual oficial organiza el campus en edificios PUCESI y puntos estrategicos.
 
 PUNTOS ESTRATEGICOS DEL CAMPUS
-- Biblioteca PUCE Ibarra: punto independiente de consulta bibliografica, biblioteca virtual, bases digitales, hemeroteca y apoyo a investigacion. Horario oficial de referencia publicado: lunes a viernes de 07:00 a 21:00 y sabados de 08:00 a 13:00. Extensiones: 1313, 1314 y 1315.
+- Biblioteca PUCE Ibarra: se ubica dentro del Edificio 4. Atiende consulta bibliografica, biblioteca virtual, bases digitales, hemeroteca y apoyo a investigacion. Horario oficial de referencia publicado: lunes a viernes de 07:00 a 21:00 y sabados de 08:00 a 13:00. Extensiones: 1313, 1314 y 1315.
+- Capilla: queda pasando la entrada principal de la PUCESI.
+- Bar o cafeteria: hay dos puntos principales, uno en el Edificio 1 y otro en el Edificio 4.
+- Copias, impresion o escaneo: queda en el Edificio 3.
+- Laboratorios: quedan en el Edificio 3.
+- Estadio PUCESI: queda yendo hacia el Edificio 5. A la derecha se ve el estadio junto a las canchas de basket y voley.
 - Centro de Convenciones Fernando Rielo: espacio para eventos institucionales, ceremonias, conferencias y actos academicos.
-- Banco de Germoplasma: espacio academico y de investigacion vinculado a ciencias agricolas, ambientales y conservacion.
-- Laboratorio de Computo Sala 1: punto estrategico para practicas de computacion y actividades tecnologicas.
-- Estadio PUCESI: zona deportiva y de actividades recreativas/institucionales.
 
-DISTRIBUCION POR EDIFICIOS OFICIALES
-- Edificio 1: ENCI / Arquitectura. En el prototipo se relaciona con el bloque A para orientar aulas A-101, A-102 y A-202. El plan de emergencia institucional referencia una cafeteria en planta baja del Edificio 1. Usar tambien como referencia para consultas de bar o cafeteria.
-- Edificio 2: ECOMS / GESTURH y areas de educacion, comunicacion, gerencia y turismo. En el prototipo se relaciona con el bloque B para orientar aulas B-101 y B-105.
-- Edificio 3: Escuela de Ingenieria, Ciencias de la Computacion y Centro de Idiomas. En el prototipo se relaciona con el bloque C y con laboratorios. Aulas/laboratorios asociados: C-301, LAB-01, LAB-02, LAB-03, LAB-1 y LAB-2. En el piso 3 se ubica la Oficina de Comunicacion y Marketing para gestionar el carnet institucional.
-- Edificio 4: Escuela de Ciencias Agricolas y Ambientales y Escuela de Diseno. En planta baja se ubican Direccion de Estudiantes, Secretaria General, Tesoreria, Sala de Grados y algunas aulas. Usar como punto de referencia para tramites academicos, pagos, certificados y atencion estudiantil.
+DISTRIBUCION POR EDIFICIOS VALIDADA PARA EL PROTOTIPO
+- Edificio 1: punto de referencia para Direccion de Estudiantes y uno de los bares/cafeterias del campus. En el prototipo se relaciona con el bloque A para orientar aulas A-101, A-102 y A-202.
+- Edificio 2: punto de referencia para gestion de carnet institucional. En el prototipo se relaciona con el bloque B para orientar aulas B-101 y B-105.
+- Edificio 3: punto de referencia para copias, impresion, laboratorios, Ingenieria, Ciencias de la Computacion y Centro de Idiomas. Aulas/laboratorios asociados: C-301, LAB-01, LAB-02, LAB-03, LAB-1 y LAB-2.
+- Edificio 4: punto de referencia para Biblioteca PUCE Ibarra, bar/cafeteria, Secretaria General, Tesoreria, Sala de Grados y servicios administrativos.
+- Edificio 5 / zona deportiva: al dirigirse hacia el Edificio 5, a la derecha se encuentra el estadio junto a las canchas de basket y voley.
 
 AULAS REGISTRADAS EN EL PROTOTIPO
 - A-101: Bloque A / Edificio A, piso 1, capacidad 30.
@@ -44,23 +47,28 @@ AULAS REGISTRADAS EN EL PROTOTIPO
 - LAB-2: Laboratorios, piso 2, capacidad 30.
 
 SERVICIOS FRECUENTES
-- Bar o cafeteria: referencia principal en Edificio 1, planta baja. Si el estudiante pregunta "donde queda el bar", responder: "en la zona de cafeteria/bar de planta baja del Edificio 1; si necesitas el local exacto del dia, confirma en garita o Direccion de Estudiantes".
-- Copias, impresion o escaneo: servicio de apoyo para tramites y material academico. En el prototipo se orienta hacia la zona de servicios estudiantiles y administrativos del Edificio 4, planta baja, cerca de Direccion de Estudiantes, Secretaria General y Tesoreria. Si el usuario pide exactitud operativa, recomendar confirmar el punto activo en Secretaria General o garita porque puede variar.
-- Biblioteca: consultar como punto independiente del campus, no dentro de un bloque de aulas. Recomendar ir a Biblioteca PUCE Ibarra para prestamos, busqueda bibliografica, bases digitales, repositorio y Turnitin.
+- Bar o cafeteria: hay dos puntos principales, uno en el Edificio 1 y otro en el Edificio 4.
+- Copias, impresion o escaneo: Edificio 3.
+- Biblioteca: dentro del Edificio 4. Recomendar ir a Biblioteca PUCE Ibarra para prestamos, busqueda bibliografica, bases digitales, repositorio y Turnitin.
 - Tesoreria: Edificio 4, planta baja.
 - Secretaria General: Edificio 4, planta baja.
-- Direccion de Estudiantes: Edificio 4, planta baja.
+- Direccion de Estudiantes: Edificio 1.
 - Sala de Grados: Edificio 4, planta baja.
-- Carnet institucional: Oficina de Comunicacion y Marketing, Edificio 3, piso 3.
+- Carnet institucional: Edificio 2.
 - Laboratorios de computacion: Edificio 3 / zona de Laboratorios; usar el codigo de aula LAB que aparezca en el horario.
-- Actividades deportivas: Estadio PUCESI.
+- Capilla: pasando la entrada principal de la PUCESI.
+- Actividades deportivas: estadio hacia el Edificio 5, a la derecha, junto a las canchas de basket y voley.
 
 COMO RESPONDER PREGUNTAS DE UBICACION
-- Pregunta: "Donde queda A-101?" Respuesta esperada: "A-101 esta en el bloque A, piso 1; en la guia del campus se orienta con el Edificio 1/Arquitectura. Revisa tu horario por si el aula fue reasignada".
-- Pregunta: "Donde queda el bar?" Respuesta esperada: "El bar/cafeteria se referencia en planta baja del Edificio 1. Si buscas el local exacto abierto hoy, confirma en garita o Direccion de Estudiantes".
-- Pregunta: "Donde saco copias?" Respuesta esperada: "El servicio de copias/impresion se orienta en la zona de servicios estudiantiles del Edificio 4, planta baja, cerca de Direccion de Estudiantes, Secretaria General y Tesoreria. Conviene confirmar el punto activo en garita".
+- Pregunta: "Donde queda A-101?" Respuesta esperada: "A-101 esta en el bloque A, piso 1; en la guia del campus se orienta con el Edificio 1. Revisa tu horario por si el aula fue reasignada".
+- Pregunta: "Donde queda el bar?" Respuesta esperada: "Hay dos bares/cafeterias principales: uno en el Edificio 1 y otro en el Edificio 4".
+- Pregunta: "Donde saco copias?" Respuesta esperada: "El servicio de copias e impresion queda en el Edificio 3".
 - Pregunta: "Donde pago?" Respuesta esperada: "Tesoreria esta en planta baja del Edificio 4".
-- Pregunta: "Donde saco el carnet?" Respuesta esperada: "El carnet institucional se gestiona en Comunicacion y Marketing, Edificio 3, piso 3".
+- Pregunta: "Donde saco el carnet?" Respuesta esperada: "El carnet institucional se gestiona en el Edificio 2".
+- Pregunta: "Donde queda la biblioteca?" Respuesta esperada: "La biblioteca queda dentro del Edificio 4".
+- Pregunta: "Donde queda Direccion de Estudiantes?" Respuesta esperada: "Direccion de Estudiantes queda en el Edificio 1".
+- Pregunta: "Donde queda el estadio?" Respuesta esperada: "El estadio queda yendo hacia el Edificio 5; a la derecha lo veras junto a las canchas de basket y voley".
+- Pregunta: "Donde queda la capilla?" Respuesta esperada: "La capilla queda pasando la entrada principal de la PUCESI".
 
 SISTEMA DE CALIFICACION DEL PROTOTIPO
 La calificacion de cada asignatura se maneja sobre 200 puntos.

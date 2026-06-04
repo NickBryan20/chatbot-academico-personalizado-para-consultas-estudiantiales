@@ -17,16 +17,16 @@ const campusZones = [
   {
     id: 'building-1',
     title: 'Edificio 1',
-    detail: 'ENCI / Arquitectura',
-    services: ['A-101', 'A-102', 'A-202', 'Bar / cafetería'],
+    detail: 'Acceso estudiantil',
+    services: ['Dirección Estudiantes', 'Bar / cafetería', 'A-101', 'A-102'],
     icon: Building2,
     className: 'left-[10%] top-[18%] w-[23%] h-[22%] bg-sky-600',
   },
   {
     id: 'building-2',
     title: 'Edificio 2',
-    detail: 'ECOMS / GESTURH',
-    services: ['B-101', 'B-105', 'Educación', 'Comunicación'],
+    detail: 'ECOMS / Gestiones',
+    services: ['Carnet institucional', 'B-101', 'B-105'],
     icon: GraduationCap,
     className: 'left-[38%] top-[12%] w-[21%] h-[24%] bg-indigo-700',
   },
@@ -34,36 +34,38 @@ const campusZones = [
     id: 'building-3',
     title: 'Edificio 3',
     detail: 'Ingeniería / Idiomas',
-    services: ['C-301', 'LAB-01', 'LAB-02', 'Carnet piso 3'],
+    services: ['Copias', 'Laboratorios', 'C-301', 'LAB-01'],
     icon: Monitor,
     className: 'right-[9%] top-[19%] w-[24%] h-[23%] bg-emerald-700',
   },
   {
     id: 'building-4',
     title: 'Edificio 4',
-    detail: 'ECAA / Diseño',
-    services: ['Dirección Estudiantes', 'Secretaría', 'Tesorería', 'Copias'],
+    detail: 'Biblioteca / servicios',
+    services: ['Biblioteca', 'Bar / cafetería', 'Secretaría', 'Tesorería'],
     icon: Wallet,
     className: 'left-[17%] bottom-[16%] w-[30%] h-[25%] bg-amber-600',
   },
   {
-    id: 'library',
-    title: 'Biblioteca',
-    detail: 'Consulta y recursos digitales',
-    services: ['Préstamos', 'Bases digitales', 'Turnitin'],
-    icon: BookOpen,
-    className: 'right-[16%] bottom-[17%] w-[25%] h-[23%] bg-slate-700',
+    id: 'building-5',
+    title: 'Edificio 5 / Deportes',
+    detail: 'Zona deportiva derecha',
+    services: ['Estadio', 'Basket', 'Vóley'],
+    icon: Trophy,
+    className: 'right-[12%] bottom-[15%] w-[27%] h-[23%] bg-slate-700',
   },
 ];
 
 const servicePoints = [
   { label: 'Entrada principal', value: 'Av. Jorge Guzmán Rueda y Av. Aurelio Espinosa Pólit', icon: MapPin },
-  { label: 'Bar / cafetería', value: 'Edificio 1, planta baja', icon: Coffee },
-  { label: 'Copias e impresión', value: 'Zona de servicios estudiantiles, Edificio 4', icon: Copy },
-  { label: 'Centro Fernando Rielo', value: 'Eventos y actos académicos', icon: Landmark },
+  { label: 'Capilla', value: 'Pasando la entrada principal de la PUCESI', icon: Landmark },
+  { label: 'Bar / cafetería', value: 'Edificio 1 y Edificio 4', icon: Coffee },
+  { label: 'Copias e impresión', value: 'Edificio 3', icon: Copy },
+  { label: 'Biblioteca', value: 'Dentro del Edificio 4', icon: BookOpen },
+  { label: 'Carnet institucional', value: 'Edificio 2', icon: Megaphone },
+  { label: 'Dirección de Estudiantes', value: 'Edificio 1', icon: GraduationCap },
   { label: 'Computación Sala 1', value: 'Laboratorios / Edificio 3', icon: Monitor },
-  { label: 'Estadio PUCESI', value: 'Actividades deportivas', icon: Trophy },
-  { label: 'Carnet institucional', value: 'Comunicación y Marketing, Edificio 3 piso 3', icon: Megaphone },
+  { label: 'Estadio PUCESI', value: 'Camino al Edificio 5, a la derecha junto a canchas de basket y vóley', icon: Trophy },
 ];
 
 const CampusMapSection: React.FC = () => {
@@ -147,7 +149,7 @@ const CampusMapSection: React.FC = () => {
             })}
 
             <div className="absolute bottom-5 left-6 right-6 z-20 rounded-md bg-white/95 px-4 py-3 text-sm text-slate-700 shadow-sm">
-              Biblioteca, Centro de Convenciones Fernando Rielo, Banco de Germoplasma, Laboratorio de Cómputo Sala 1 y Estadio PUCESI se tratan como puntos estratégicos del campus.
+              La capilla está pasando la entrada principal. El estadio queda camino al Edificio 5, hacia la derecha, junto a las canchas de basket y vóley.
             </div>
           </div>
 
@@ -170,7 +172,7 @@ const CampusMapSection: React.FC = () => {
               })}
             </div>
             <p className="mt-5 rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-900">
-              Los servicios como copias o cafetería pueden cambiar de punto activo; el chatbot indicará confirmar en garita o Dirección de Estudiantes cuando sea necesario.
+              Para aulas exactas usa el código de tu horario. El chatbot responderá con estas ubicaciones del campus y, si hay cambios operativos, sugerirá confirmar en garita.
             </p>
           </div>
         </div>
