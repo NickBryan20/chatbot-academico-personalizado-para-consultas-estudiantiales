@@ -12,7 +12,13 @@ interface Message {
 interface ChatWindowProps {
   initialMsg?: string;
   isPublic?: boolean;
-  unreadNotifications?: any[];
+  unreadNotifications?: NotificationItem[];
+}
+
+interface NotificationItem {
+  id?: string | number;
+  title?: string;
+  message?: string;
 }
 
 /**
@@ -32,6 +38,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [audioNotice, setAudioNotice] = useState('');
   const { isAuthenticated } = useAuthStore();
   const [sessionId] = useState(() => {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -44,8 +51,43 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
   });
   const scrollRef = useRef<HTMLDivElement>(null);
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
+
+  const getAudioContext = () => {
+    if (audioContextRef.current) return audioContextRef.current;
+    const AudioContextCtor = window.AudioContext || (window as Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextCtor) return null;
+    audioContextRef.current = new AudioContextCtor();
+    return audioContextRef.current;
+  };
+
+  const unlockAudioOutput = async () => {
+    const context = getAudioContext();
+    if (context?.state === 'suspended') {
+      await context.resume();
+    }
+  };
+
+  const base64ToArrayBuffer = (base64: string) => {
+    const binary = window.atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
 
   const stopCurrentAudio = () => {
+    if (activeSourceRef.current) {
+      try {
+        activeSourceRef.current.stop();
+      } catch {
+        // La fuente puede haber terminado ya.
+      }
+      activeSourceRef.current.disconnect();
+      activeSourceRef.current = null;
+    }
     if (!activeAudioRef.current) return;
     activeAudioRef.current.pause();
     activeAudioRef.current.currentTime = 0;
@@ -53,18 +95,52 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
     activeAudioRef.current = null;
   };
 
-  const playAudioResponse = (audioBase64?: string) => {
-    if (!audioBase64) return;
+  const playAudioResponse = async (audioBase64?: string) => {
+    if (!audioBase64) {
+      setAudioNotice('No se recibió audio para reproducir.');
+      return;
+    }
 
     stopCurrentAudio();
-    const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
-    activeAudioRef.current = audio;
-    audio.onended = () => {
-      if (activeAudioRef.current === audio) {
-        activeAudioRef.current = null;
+
+    try {
+      const context = getAudioContext();
+      if (context) {
+        if (context.state === 'suspended') {
+          await context.resume();
+        }
+        const audioBuffer = await context.decodeAudioData(base64ToArrayBuffer(audioBase64).slice(0));
+        const source = context.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(context.destination);
+        activeSourceRef.current = source;
+        source.onended = () => {
+          if (activeSourceRef.current === source) {
+            activeSourceRef.current = null;
+          }
+        };
+        source.start(0);
+        setAudioNotice('');
+        return;
       }
-    };
-    audio.play().catch(e => console.warn("Autoplay blocked:", e));
+    } catch (audioContextError) {
+      console.warn("WebAudio playback failed:", audioContextError);
+    }
+
+    try {
+      const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+      activeAudioRef.current = audio;
+      audio.onended = () => {
+        if (activeAudioRef.current === audio) {
+          activeAudioRef.current = null;
+        }
+      };
+      await audio.play();
+      setAudioNotice('');
+    } catch (audioError) {
+      console.warn("Audio playback blocked:", audioError);
+      setAudioNotice('El navegador bloqueó el audio. Presiona Enviar o el micrófono otra vez para activar la voz.');
+    }
   };
 
   useEffect(() => {
@@ -101,7 +177,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
         try {
           const res = await api.post('/chat/', { message: `ANUNCIO_NOTIFICACIONES: ${msg}`, session_id: sessionId });
           if (res.data.audio_base64) {
-             playAudioResponse(res.data.audio_base64);
+             await playAudioResponse(res.data.audio_base64);
           }
         } catch (e) {
           console.error("Error announcing notifications:", e);
@@ -111,12 +187,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
     }
   }, [unreadNotifications]);
 
-  const sendMessage = async (voiceBlob?: Blob, customMsg?: string) => {
+  async function sendMessage(voiceBlob?: Blob, customMsg?: string) {
     const textMsg = customMsg || input.trim();
     if (!voiceBlob && !textMsg) return;
     if (loading) return;
 
+    await unlockAudioOutput();
     stopCurrentAudio();
+    setAudioNotice('');
     setLoading(true);
     const newMessages = [...messages];
     if (textMsg) {
@@ -135,20 +213,26 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         
-        const { transcript, response, audio_base64 } = res.data;
+        const { transcript, response, audio_base64, audio_error } = res.data;
         newMessages.push({ role: 'user', content: transcript });
         newMessages.push({ role: 'assistant', content: response });
         
         // Robust Playback
-        playAudioResponse(audio_base64);
+        if (audio_base64) {
+          await playAudioResponse(audio_base64);
+        } else if (audio_error) {
+          setAudioNotice(audio_error);
+        }
       } else {
         const res = await api.post('/chat/', { message: textMsg, session_id: sessionId });
-        const { response, audio_base64 } = res.data;
+        const { response, audio_base64, audio_error } = res.data;
         newMessages.push({ role: 'assistant', content: response });
         
         // Always play audio if available (even for text/career clicks)
         if (audio_base64) {
-          playAudioResponse(audio_base64);
+          await playAudioResponse(audio_base64);
+        } else if (audio_error) {
+          setAudioNotice(audio_error);
         }
       }
       setMessages([...newMessages]);
@@ -158,10 +242,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const startRecording = async () => {
     try {
+      await unlockAudioOutput();
       stopCurrentAudio();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
@@ -297,7 +382,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
                   value={input}
                   disabled={isRecording || loading}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      void sendMessage();
+                    }
+                  }}
                   placeholder={isRecording ? 'Escuchando tu voz...' : 'Escribe tu consulta...'}
                   className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-800 focus:border-[#00AEEF] focus:ring-1 focus:ring-[#00AEEF] transition-all outline-none disabled:opacity-50"
                 />
@@ -327,7 +416,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ initialMsg, isPublic = false, u
                 </button>
               </div>
               <p className="text-[10px] text-gray-400 text-center mt-3 tracking-wide">
-                Desarrollado para PUCE Sede Ibarra
+                {audioNotice || 'Desarrollado para PUCE Sede Ibarra'}
               </p>
             </div>
           </motion.div>

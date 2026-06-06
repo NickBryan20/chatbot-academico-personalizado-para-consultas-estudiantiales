@@ -2,6 +2,7 @@ import uuid
 import logging
 import base64
 
+from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -20,14 +21,21 @@ class ChatView(APIView):
     Ahora incluye soporte de voz (TTS) para todas las respuestas.
     """
     permission_classes = [AllowAny]
+    throttle_scope = 'chat'
 
     def post(self, request):
-        message = request.data.get('message', '').strip()
+        raw_message = request.data.get('message', '')
+        message = str(raw_message).strip() if raw_message is not None else ''
         session_id = request.data.get('session_id') or str(uuid.uuid4())
 
         if not message:
             return Response(
                 {'error': 'El mensaje no puede estar vacío.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if len(message) > settings.CHAT_MAX_MESSAGE_LENGTH:
+            return Response(
+                {'error': 'El mensaje supera la longitud máxima permitida.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -54,9 +62,11 @@ class ChatView(APIView):
             audio_bytes = voice_service.text_to_speech(response_text)
             audio_b64 = base64.b64encode(audio_bytes).decode('utf-8')
             result['audio_base64'] = audio_b64
+            result['audio_format'] = 'mp3'
         except Exception as e:
             logger.error(f"Error generando TTS en ChatView: {e}")
-            # No bloqueamos la respuesta de texto si falla el audio
+            result['audio_error'] = 'No se pudo generar audio para esta respuesta.'
+            result['audio_format'] = None
 
         return Response(result, status=status.HTTP_200_OK)
 

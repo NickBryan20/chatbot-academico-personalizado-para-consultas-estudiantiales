@@ -81,6 +81,7 @@ class OTPToken(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otp_tokens')
     code = models.CharField(max_length=6)
+    code_hash = models.CharField(max_length=128, blank=True, default='')
     temp_token = models.UUIDField(default=uuid.uuid4, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
@@ -92,7 +93,7 @@ class OTPToken(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"OTP:{self.code} para {self.user.username} (expira: {self.expires_at})"
+        return f"OTP para {self.user.username} (expira: {self.expires_at})"
 
     @property
     def is_valid(self):

@@ -4,6 +4,9 @@ Maneja la carga, fragmentación, embeddings y búsqueda semántica de documentos
 """
 import logging
 import pickle
+import re
+import unicodedata
+from collections import Counter
 from typing import List, Tuple
 from pathlib import Path
 
@@ -21,6 +24,21 @@ class RAGEngine:
     _index = None
     _chunks = None  # Lista de textos correspondientes a cada vector
     _metadata = None  # Metadata de cada chunk (fuente, página, etc.)
+    _LEXICAL_STOPWORDS = {
+        'para', 'como', 'donde', 'dónde', 'queda', 'quedan', 'esta', 'está',
+        'este', 'esta', 'esto', 'que', 'qué', 'cual', 'cuál', 'los', 'las',
+        'una', 'uno', 'del', 'con', 'por', 'mis', 'tus', 'sus', 'puedo',
+        'debo', 'debes', 'necesito', 'saco', 'sacar', 'hacer', 'universidad',
+        'pucesi',
+    }
+    _QUERY_EXPANSIONS = {
+        'entrar': ('ingreso', 'ingresar', 'acceso', 'fisico', 'carnet', 'guardias', 'seguridad', 'hoja', 'control'),
+        'entrada': ('ingreso', 'ingresar', 'acceso', 'fisico', 'carnet', 'guardias', 'seguridad', 'hoja', 'control'),
+        'ingreso': ('entrar', 'ingresar', 'acceso', 'fisico', 'carnet', 'guardias', 'seguridad', 'hoja', 'control'),
+        'ingresar': ('entrar', 'ingreso', 'acceso', 'fisico', 'carnet', 'guardias', 'seguridad', 'hoja', 'control'),
+        'acceso': ('entrar', 'ingreso', 'ingresar', 'fisico', 'carnet', 'guardias', 'seguridad', 'hoja', 'control'),
+        'carnet': ('credencial', 'institucional', 'edificio', 'piso'),
+    }
 
     def __new__(cls):
         if cls._instance is None:
@@ -242,6 +260,71 @@ class RAGEngine:
 
         return chunks
 
+    def _normalize_for_search(self, text: str) -> str:
+        """Normaliza acentos y mayúsculas para coincidencias locales."""
+        normalized = unicodedata.normalize('NFD', text)
+        without_accents = ''.join(
+            char for char in normalized if unicodedata.category(char) != 'Mn'
+        )
+        return without_accents.lower()
+
+    def _query_terms(self, query: str) -> List[str]:
+        normalized_query = self._normalize_for_search(query)
+        raw_terms = re.findall(r'[a-z0-9]+', normalized_query)
+        terms = [
+            term for term in raw_terms
+            if len(term) > 2 and term not in self._LEXICAL_STOPWORDS
+        ]
+        expanded_terms = []
+        for term in terms:
+            expanded_terms.append(term)
+            expanded_terms.extend(self._QUERY_EXPANSIONS.get(term, ()))
+        return list(dict.fromkeys(expanded_terms))
+
+    def _search_current_documents_lexical(self, query: str, top_k: int) -> List[dict]:
+        """
+        Respaldo local cuando no se pueden generar embeddings.
+        Usa siempre los documentos actuales, evitando responder con un índice FAISS viejo.
+        """
+        chunks, metadata = self._load_and_chunk_documents()
+        if not chunks:
+            return []
+
+        terms = self._query_terms(query)
+        if not terms:
+            return []
+
+        results = []
+        for idx, chunk in enumerate(chunks):
+            normalized_chunk = self._normalize_for_search(chunk)
+            chunk_terms = Counter(re.findall(r'[a-z0-9]+', normalized_chunk))
+            term_hits = sum(chunk_terms.get(term, 0) for term in terms)
+            if term_hits == 0:
+                continue
+
+            item_metadata = metadata[idx] if idx < len(metadata) else {}
+            source = item_metadata.get('source', 'desconocido')
+            if source in self._excluded_sources():
+                continue
+
+            priority = self._source_priority(source)
+            score = term_hits / max(len(terms), 1)
+            results.append({
+                'content': chunk,
+                'score': float(score),
+                'weighted_score': float(score) + (priority * 0.25),
+                'source': source,
+                'source_type': self._source_type(source),
+                'priority': priority,
+            })
+
+        results.sort(key=lambda item: item['weighted_score'], reverse=True)
+        logger.warning(
+            "RAG search: usando búsqueda léxica local para '%s'",
+            query[:50],
+        )
+        return results[:top_k]
+
     def search(self, query: str, top_k: int = None) -> List[dict]:
         """
         Búsqueda semántica en el índice FAISS.
@@ -256,28 +339,25 @@ class RAGEngine:
         import faiss
         import numpy as np
 
+        if top_k is None:
+            top_k = settings.RAG_TOP_K
+
         if self._index is None:
             logger.warning("Índice RAG no construido. Intentando cargar...")
             try:
                 self.build_index()
             except Exception as e:
                 logger.error(f"No se pudo reconstruir el índice RAG: {e}")
-                index_path = Path(settings.FAISS_INDEX_PATH)
-                loaded = self._load_existing_index(
-                    index_path,
-                    index_path.parent / 'chunks.pkl',
-                    index_path.parent / 'metadata.pkl',
-                )
-                if not loaded:
-                    return []
+                return self._search_current_documents_lexical(query, top_k)
             if self._index is None:
-                return []
-
-        if top_k is None:
-            top_k = settings.RAG_TOP_K
+                return self._search_current_documents_lexical(query, top_k)
 
         # Generar embedding de la query
-        query_embedding = np.array([self._get_embedding(query)], dtype=np.float32)
+        try:
+            query_embedding = np.array([self._get_embedding(query)], dtype=np.float32)
+        except Exception as e:
+            logger.error(f"No se pudo generar embedding de consulta RAG: {e}")
+            return self._search_current_documents_lexical(query, top_k)
         faiss.normalize_L2(query_embedding)
 
         # Buscar más candidatos y luego reordenar por prioridad documental + similitud.

@@ -2,6 +2,8 @@
 Serializers para autenticación: login, OTP, registro.
 """
 from rest_framework import serializers
+from django.contrib.auth.hashers import check_password
+from django.utils.crypto import constant_time_compare
 
 from .models import User, OTPToken
 from apps.audit_logs.services import AuditLogService
@@ -59,13 +61,20 @@ class OTPVerifySerializer(serializers.Serializer):
         try:
             otp = OTPToken.objects.get(
                 temp_token=data['temp_token'],
-                code=data['otp_code'],
             )
         except OTPToken.DoesNotExist:
             raise serializers.ValidationError("Código OTP inválido.")
 
         if not otp.is_valid:
             raise serializers.ValidationError("Código OTP expirado o ya utilizado.")
+
+        code_is_valid = (
+            check_password(data['otp_code'], otp.code_hash)
+            if otp.code_hash
+            else constant_time_compare(otp.code, data['otp_code'])
+        )
+        if not code_is_valid:
+            raise serializers.ValidationError("Código OTP inválido.")
 
         data['otp'] = otp
         data['user'] = otp.user

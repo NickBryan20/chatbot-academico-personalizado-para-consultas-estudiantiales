@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import api from '../services/api';
 
 interface User {
   id: string;
@@ -15,7 +16,7 @@ interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
   setAuth: (user: User, token: string, refreshToken: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -30,8 +31,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user, token, isAuthenticated: true });
   },
 
-  logout: () => {
-    localStorage.clear();
-    set({ user: null, token: null, isAuthenticated: false });
+  logout: async () => {
+    const refreshToken = localStorage.getItem('refresh_token');
+
+    try {
+      if (refreshToken) {
+        await api.post('/auth/logout/', { refresh: refreshToken });
+      }
+    } catch (error) {
+      console.error('No se pudo registrar el cierre de sesión', error);
+    } finally {
+      localStorage.clear();
+      set({ user: null, token: null, isAuthenticated: false });
+    }
   },
 }));

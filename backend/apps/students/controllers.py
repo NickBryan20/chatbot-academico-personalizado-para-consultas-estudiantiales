@@ -17,7 +17,16 @@ class EstudianteControlador:
         Registra el acceso en AuditLog.
         """
         student = Student.objects.get(user=user)
-        AuditLogService.log_data_access(user, 'profile', request)
+        AuditLogService.log_data_access(
+            user,
+            'profile',
+            request,
+            metadata={
+                'student_code': student.student_code,
+                'career': student.carrera,
+                'semester_current': student.semester_current,
+            },
+        )
         return student
 
     @staticmethod
@@ -32,7 +41,15 @@ class EstudianteControlador:
             grades = grades.filter(academic_period=period)
         grades = grades.order_by('-academic_period', 'subject__semester')
         
-        AuditLogService.log_data_access(user, 'grades_history', request)
+        AuditLogService.log_data_access(
+            user,
+            'grades_history',
+            request,
+            metadata={
+                'period': period or 'all',
+                'result_count': grades.count(),
+            },
+        )
         return grades
 
     @staticmethod
@@ -48,11 +65,19 @@ class EstudianteControlador:
             status='active'
         ).select_related('schedule__subject', 'schedule__professor', 'schedule__classroom')
         
-        AuditLogService.log_data_access(user, 'schedule', request)
+        AuditLogService.log_data_access(
+            user,
+            'schedule',
+            request,
+            metadata={
+                'period': period,
+                'result_count': enrollments.count(),
+            },
+        )
         return [e.schedule for e in enrollments]
 
     @staticmethod
-    def obtener_estadisticas(user):
+    def obtener_estadisticas(user, request=None):
         """
         Calcula el GPA, créditos totales y porcentaje de asistencia.
         Útil para mostrar el resumen en el Dashboard del estudiante.
@@ -69,16 +94,27 @@ class EstudianteControlador:
         
         total_credits = all_grades.aggregate(Sum('subject__credits'))['subject__credits__sum'] or 0
         
-        return {
+        stats = {
             'gpa': round(float(gpa), 2),
             'passed_subjects': passed_count,
             'attendance_avg': round(float(avg_attendance), 1),
             'total_credits': total_credits,
             'current_semester': student.semester_current
         }
+        AuditLogService.log_data_access(
+            user,
+            'stats',
+            request,
+            metadata={
+                'current_period': current_period,
+                'current_semester': student.semester_current,
+                'passed_subjects': passed_count,
+            },
+        )
+        return stats
 
     @staticmethod
-    def obtener_notificaciones(user, unread_only=False):
+    def obtener_notificaciones(user, unread_only=False, request=None):
         """
         Devuelve el buzón de notificaciones del estudiante.
         Si unread_only es True, filtra solo las no leídas.
@@ -87,10 +123,19 @@ class EstudianteControlador:
         notifications = Notification.objects.filter(student=student)
         if unread_only:
             notifications = notifications.filter(is_read=False)
+        AuditLogService.log_data_access(
+            user,
+            'notifications',
+            request,
+            metadata={
+                'unread_only': unread_only,
+                'result_count': notifications.count(),
+            },
+        )
         return notifications
 
     @staticmethod
-    def marcar_notificacion_leida(user, pk):
+    def marcar_notificacion_leida(user, pk, request=None):
         """
         Marca una notificación específica como leída en la base de datos.
         """
@@ -98,6 +143,15 @@ class EstudianteControlador:
         notification = Notification.objects.get(pk=pk, student=student)
         notification.is_read = True
         notification.save()
+        AuditLogService.log_data_access(
+            user,
+            'notifications',
+            request,
+            metadata={
+                'operation': 'mark_read',
+                'notification_id': str(notification.id),
+            },
+        )
         return True
 
     @staticmethod
@@ -110,7 +164,14 @@ class EstudianteControlador:
         enrolled_subjects = Enrollment.objects.filter(student=student, status='active').values_list('schedule__subject', flat=True)
         from .models import Activity
         activities = Activity.objects.filter(subject__in=enrolled_subjects).order_by('due_date')
-        AuditLogService.log_data_access(user, 'activities', request)
+        AuditLogService.log_data_access(
+            user,
+            'activities',
+            request,
+            metadata={
+                'result_count': activities.count(),
+            },
+        )
         return activities
 
     @staticmethod
@@ -135,7 +196,19 @@ class EstudianteControlador:
                 submission.comments = comments
             submission.save()
             
-        AuditLogService.log_data_access(user, 'submit_activity', request)
+        AuditLogService.log_data_access(
+            user,
+            'submit_activity',
+            request,
+            metadata={
+                'activity_id': str(activity.id),
+                'subject_id': str(activity.subject_id),
+                'submission_id': str(submission.id),
+                'operation': 'created' if created else 'updated',
+                'file_name': getattr(file, 'name', ''),
+                'file_size': getattr(file, 'size', None),
+            },
+        )
         return submission
 
     @staticmethod
@@ -202,5 +275,17 @@ class EstudianteControlador:
             due_date=data.get('due_date'),
             file=file,
         )
-        AuditLogService.log_data_access(user, 'teacher_create_activity', request)
+        AuditLogService.log_data_access(
+            user,
+            'teacher_create_activity',
+            request,
+            metadata={
+                'activity_id': str(activity.id),
+                'subject_id': str(subject.id),
+                'due_date': activity.due_date.isoformat() if activity.due_date else None,
+                'has_file': bool(file),
+                'file_name': getattr(file, 'name', '') if file else '',
+                'file_size': getattr(file, 'size', None) if file else None,
+            },
+        )
         return activity

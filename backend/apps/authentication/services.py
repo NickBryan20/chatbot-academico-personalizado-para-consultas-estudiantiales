@@ -1,13 +1,14 @@
 """
 Servicio de OTP: generación, envío (consola en dev) y validación.
 """
-import random
 import string
 import logging
+import secrets
 from datetime import timedelta
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 
 from .models import OTPToken
@@ -27,8 +28,8 @@ class OTPService:
         # Invalidar OTPs anteriores no usados
         OTPToken.objects.filter(user=user, is_used=False).update(is_used=True)
 
-        # Generar código numérico de 6 dígitos
-        code = ''.join(random.choices(string.digits, k=settings.OTP_LENGTH))
+        # Generar código numérico con RNG criptográfico.
+        code = ''.join(secrets.choice(string.digits) for _ in range(settings.OTP_LENGTH))
 
         # Calcular expiración
         expires_at = timezone.now() + timedelta(seconds=settings.OTP_EXPIRY_SECONDS)
@@ -36,9 +37,11 @@ class OTPService:
         # Crear token
         otp = OTPToken.objects.create(
             user=user,
-            code=code,
+            code='*' * settings.OTP_LENGTH,
+            code_hash=make_password(code),
             expires_at=expires_at,
         )
+        otp._plain_code = code
 
         logger.info(f"OTP generado para usuario {user.username}")
         return otp
@@ -51,13 +54,14 @@ class OTPService:
         En producción: envía email real a @pucesi.edu.ec.
         """
         subject = "PUCESI - Código de verificación (2FA)"
+        code = getattr(otp, '_plain_code', otp.code)
         message = f"""
 Estimado/a {user.first_name} {user.last_name},
 
 Tu código de verificación para acceder al Sistema Académico PUCESI es:
 
     ╔══════════════╗
-    ║   {otp.code}   ║
+    ║   {code}   ║
     ╚══════════════╝
 
 Este código es válido por 5 minutos.

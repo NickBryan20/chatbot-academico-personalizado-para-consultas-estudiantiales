@@ -30,6 +30,18 @@ interface Activity {
   submissions_count: number;
 }
 
+type ApiError = {
+  response?: {
+    data?: {
+      error?: string;
+    };
+  };
+};
+
+const getApiErrorMessage = (err: unknown, fallback: string) => (
+  (err as ApiError).response?.data?.error || fallback
+);
+
 const TeacherDashboard: React.FC = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
@@ -62,8 +74,8 @@ const TeacherDashboard: React.FC = () => {
       if (!form.subject && subjectsRes.data.length > 0) {
         setForm((current) => ({ ...current, subject: subjectsRes.data[0].id }));
       }
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'No se pudo cargar la información docente.');
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, 'No se pudo cargar la información docente.'));
     } finally {
       setLoading(false);
     }
@@ -73,8 +85,8 @@ const TeacherDashboard: React.FC = () => {
     loadTeacherData();
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -99,8 +111,8 @@ const TeacherDashboard: React.FC = () => {
       });
       setForm({ subject: form.subject, title: '', description: '', dueDate: '', file: null });
       await loadTeacherData();
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'No se pudo crear la actividad.');
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, 'No se pudo crear la actividad.'));
     } finally {
       setSaving(false);
     }

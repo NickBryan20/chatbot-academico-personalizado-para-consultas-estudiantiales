@@ -9,6 +9,54 @@ import { useAuthStore } from '../store/authStore';
 import api from '../services/api';
 import ChatWindow from '../components/ChatWindow';
 
+interface CourseGrade {
+  subject_name: string;
+}
+
+interface ScheduleItem {
+  day_display: string;
+  start_time: string;
+  end_time: string;
+  subject_details: {
+    name: string;
+  };
+  professor_details?: {
+    full_name: string;
+  };
+  classroom_details?: {
+    code: string;
+  };
+}
+
+interface ActivitySubmission {
+  file?: string;
+  grade?: number | string | null;
+  submitted_at: string;
+}
+
+interface StudentActivity {
+  id: string | number;
+  title: string;
+  subject_name: string;
+  due_date: string;
+  created_at: string;
+  file?: string;
+  submission?: ActivitySubmission | null;
+}
+
+interface NotificationItem {
+  id?: string | number;
+  title?: string;
+  message?: string;
+}
+
+interface SidebarItemProps {
+  icon: React.ReactNode;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}
+
 /**
  * Dashboard.tsx
  * Componente principal del área personal del estudiante.
@@ -23,16 +71,16 @@ const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('area-personal');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [coursesExpanded, setCoursesExpanded] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CourseGrade | null>(null);
   
   // Estado para la subida de deberes (Modal de Actividad)
-  const [selectedActivity, setSelectedActivity] = useState<any>(null);
+  const [selectedActivity, setSelectedActivity] = useState<StudentActivity | null>(null);
   
   // Estados para almacenar la data obtenida del Backend (Django)
-  const [grades, setGrades] = useState<any[]>([]);
-  const [schedule, setSchedule] = useState<any[]>([]);
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [activities, setActivities] = useState<any[]>([]);
+  const [grades, setGrades] = useState<CourseGrade[]>([]);
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [activities, setActivities] = useState<StudentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -57,8 +105,8 @@ const Dashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -272,7 +320,7 @@ const Dashboard: React.FC = () => {
                          setSelectedActivity(newAct);
                          setActivities(activities.map(a => a.id === selectedActivity.id ? newAct : a));
                          alert("¡Archivo subido exitosamente!");
-                       } catch (err) {
+                      } catch {
                          alert("Error al subir archivo");
                        }
                      }
@@ -529,7 +577,7 @@ const Dashboard: React.FC = () => {
   );
 };
 
-const SidebarItem = ({ icon, label, active, onClick }: any) => (
+const SidebarItem = ({ icon, label, active, onClick }: SidebarItemProps) => (
   <button 
     onClick={onClick}
     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all text-[13px] ${

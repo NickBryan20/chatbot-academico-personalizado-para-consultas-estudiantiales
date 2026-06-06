@@ -1,5 +1,6 @@
 """Views para el módulo de estudiantes: Enrutadores."""
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.conf import settings
 from rest_framework import permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -11,6 +12,18 @@ from .serializers import (
     ActivityCreateSerializer, SubjectSerializer
 )
 from .controllers import EstudianteControlador
+
+
+def validate_activity_upload(file):
+    if file.size > settings.MAX_ACTIVITY_UPLOAD_BYTES:
+        return 'El archivo supera el tamaño máximo permitido.'
+
+    extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
+    if extension not in settings.ACTIVITY_ALLOWED_EXTENSIONS:
+        allowed = ', '.join(sorted(settings.ACTIVITY_ALLOWED_EXTENSIONS))
+        return f'Tipo de archivo no permitido. Formatos aceptados: {allowed}.'
+
+    return None
 
 
 class StudentProfileView(APIView):
@@ -65,7 +78,7 @@ class StudentStatsView(APIView):
 
     def get(self, request):
         try:
-            stats = EstudianteControlador.obtener_estadisticas(request.user)
+            stats = EstudianteControlador.obtener_estadisticas(request.user, request)
             return Response(stats)
         except Student.DoesNotExist:
             return Response({'error': 'No encontrado.'}, status=404)
@@ -78,7 +91,7 @@ class NotificationListView(APIView):
     def get(self, request):
         try:
             unread_only = request.query_params.get('unread_only') == 'true'
-            notifications = EstudianteControlador.obtener_notificaciones(request.user, unread_only)
+            notifications = EstudianteControlador.obtener_notificaciones(request.user, unread_only, request)
             serializer = NotificationSerializer(notifications, many=True)
             return Response(serializer.data)
         except Student.DoesNotExist:
@@ -91,7 +104,7 @@ class NotificationMarkReadView(APIView):
 
     def post(self, request, pk):
         try:
-            EstudianteControlador.marcar_notificacion_leida(request.user, pk)
+            EstudianteControlador.marcar_notificacion_leida(request.user, pk, request)
             return Response({'status': 'ok'})
         except (Student.DoesNotExist, Notification.DoesNotExist):
             return Response({'error': 'No encontrado.'}, status=404)
@@ -121,6 +134,12 @@ class ActivitySubmitView(APIView):
             comments = request.data.get('comments', '')
             if not file:
                 return Response({'error': 'No se proporcionó ningún archivo.'}, status=status.HTTP_400_BAD_REQUEST)
+            upload_error = validate_activity_upload(file)
+            if upload_error:
+                return Response(
+                    {'error': upload_error},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
                 
             submission = EstudianteControlador.entregar_actividad(request.user, pk, file, comments, request)
             serializer = ActivitySubmissionSerializer(submission)
@@ -186,10 +205,17 @@ class TeacherActivityListCreateView(APIView):
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            uploaded_file = request.FILES.get('file')
+            upload_error = validate_activity_upload(uploaded_file) if uploaded_file else None
+            if upload_error:
+                return Response(
+                    {'error': upload_error},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             activity = EstudianteControlador.crear_actividad_docente(
                 request.user,
                 serializer.validated_data,
-                request.FILES.get('file'),
+                uploaded_file,
                 request,
             )
             return Response(

@@ -18,7 +18,11 @@ def resolve_base_path(value: str) -> str:
 # ── SEGURIDAD ─────────────────────────────────────────────────────────────────
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='localhost').split(',')
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in config('DJANGO_ALLOWED_HOSTS', default='localhost').split(',')
+    if host.strip()
+]
 
 AUTH_USER_MODEL = 'authentication.User'
 
@@ -138,11 +142,14 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '20/minute',
         'user': '100/minute',
         'login': '5/minute',
+        'chat': '10/minute',
+        'voice': '6/minute',
     },
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -169,7 +176,12 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
     default='http://localhost:5173'
-).split(',')
+)
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in CORS_ALLOWED_ORIGINS.split(',')
+    if origin.strip()
+]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'accept', 'accept-encoding', 'authorization',
@@ -212,6 +224,25 @@ OPENAI_TTS_INSTRUCTIONS = config(
 )
 OPENAI_WHISPER_MODEL = config('OPENAI_WHISPER_MODEL', default='whisper-1')
 
+# ── HERRAMIENTAS EXTERNAS CONTROLADAS ─────────────────────────────────────────
+WEATHER_ENABLED = config('WEATHER_ENABLED', default=True, cast=bool)
+WEATHER_DEFAULT_LOCATION = config('WEATHER_DEFAULT_LOCATION', default='Ibarra, Ecuador')
+WEATHER_DEFAULT_LATITUDE = config('WEATHER_DEFAULT_LATITUDE', default=0.3517, cast=float)
+WEATHER_DEFAULT_LONGITUDE = config('WEATHER_DEFAULT_LONGITUDE', default=-78.1223, cast=float)
+WEATHER_TIMEOUT_SECONDS = config('WEATHER_TIMEOUT_SECONDS', default=4, cast=int)
+
+# ── LÍMITES DE ENTRADA ────────────────────────────────────────────────────────
+CHAT_MAX_MESSAGE_LENGTH = config('CHAT_MAX_MESSAGE_LENGTH', default=1200, cast=int)
+MAX_AUDIO_UPLOAD_BYTES = config('MAX_AUDIO_UPLOAD_BYTES', default=5 * 1024 * 1024, cast=int)
+MAX_ACTIVITY_UPLOAD_BYTES = config('MAX_ACTIVITY_UPLOAD_BYTES', default=10 * 1024 * 1024, cast=int)
+ACTIVITY_ALLOWED_EXTENSIONS = {
+    extension.strip().lower().lstrip('.')
+    for extension in config('ACTIVITY_ALLOWED_EXTENSIONS', default='pdf,doc,docx,png,jpg,jpeg').split(',')
+    if extension.strip()
+}
+DATA_UPLOAD_MAX_MEMORY_SIZE = config('DATA_UPLOAD_MAX_MEMORY_SIZE', default=5 * 1024 * 1024, cast=int)
+FILE_UPLOAD_MAX_MEMORY_SIZE = config('FILE_UPLOAD_MAX_MEMORY_SIZE', default=5 * 1024 * 1024, cast=int)
+
 # ── RAG ───────────────────────────────────────────────────────────────────────
 FAISS_INDEX_PATH = resolve_base_path(
     config('FAISS_INDEX_PATH', default=str(BASE_DIR / 'rag_index' / 'faiss_index'))
@@ -242,5 +273,27 @@ SPECTACULAR_SETTINGS = {
 # ── SEGURIDAD DE SESIONES Y COOKIES ──────────────────────────────────────────
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
 CSRF_COOKIE_HTTPONLY = False  # El frontend necesita leerla para enviarla
 CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in config('CSRF_TRUSTED_ORIGINS', default='').split(',')
+    if origin.strip()
+]
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = config('SECURE_REFERRER_POLICY', default='same-origin')
+SECURE_CROSS_ORIGIN_OPENER_POLICY = config(
+    'SECURE_CROSS_ORIGIN_OPENER_POLICY',
+    default='same-origin'
+)
+X_FRAME_OPTIONS = 'DENY'
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
+SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=0, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=False, cast=bool)
+SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=False, cast=bool)
+
+if config('TRUST_X_FORWARDED_PROTO', default=False, cast=bool):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

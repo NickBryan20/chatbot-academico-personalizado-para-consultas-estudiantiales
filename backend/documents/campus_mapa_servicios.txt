@@ -4,6 +4,7 @@ Documento validado para el prototipo del Chatbot Academico PUCESI.
 USO PARA EL CHATBOT
 - Si el usuario pregunta por aulas, edificios, bar, cafeteria, copias, biblioteca, laboratorios, tesoreria, secretaria, direccion de estudiantes, estadio o puntos del campus, responder con esta guia primero.
 - Si el usuario pregunta por una aula de su horario, combinar esta guia con el dato exacto de la base de datos: codigo de aula, edificio y piso.
+- Si el usuario pregunta por ingreso fisico al campus, responder que debe presentar el carnet estudiantil vigente. Si no lo porta, debe registrar su ingreso en la hoja de control administrada por los guardias de seguridad.
 - Si la ubicacion fisica de un local de servicio cambia, indicar que se debe confirmar en garita, Direccion de Estudiantes o Secretaria General.
 - Para datos publicos cambiantes, como horarios oficiales de biblioteca o enlaces web, contrastar con las paginas oficiales de PUCESI.
 
@@ -18,6 +19,7 @@ La direccion general del campus es Av. Jorge Guzman Rueda y Av. Aurelio Espinosa
 El tour virtual oficial organiza el campus en edificios PUCESI y puntos estrategicos.
 Mapa temporal de campus: "El campus crece y se renueva pensando en ti". El estudiante debe seguir las rutas senalizadas para llegar a cada area. Los accesos y ubicaciones han cambiado temporalmente por obras en ejecucion.
 Ingresos senalizados en el mapa: Ingreso ECAA, Ingreso 4, Ingreso 3, Ingreso 1 e Ingreso 5.
+Para el ingreso fisico al campus, los estudiantes deben presentar el carnet estudiantil vigente. En caso de no contar con el carnet al momento del ingreso, deben registrar sus datos en la hoja de control dispuesta por los guardias de seguridad.
 
 PUNTOS ESTRATEGICOS DEL CAMPUS
 - Biblioteca PUCE Ibarra: se ubica dentro del Edificio 4. Atiende consulta bibliografica, biblioteca virtual, bases digitales, hemeroteca y apoyo a investigacion. Horario oficial de referencia publicado: lunes a viernes de 07:00 a 21:00 y sabados de 08:00 a 13:00. Extensiones: 1313, 1314 y 1315.
@@ -30,7 +32,7 @@ PUNTOS ESTRATEGICOS DEL CAMPUS
 
 DISTRIBUCION POR EDIFICIOS VALIDADA PARA EL PROTOTIPO
 - Edificio 1: punto de referencia para Direccion de Estudiantes y uno de los bares/cafeterias del campus. En el prototipo se relaciona con el bloque A para orientar aulas A-101, A-102 y A-202.
-- Edificio 2: punto de referencia para gestion de carnet institucional. En el prototipo se relaciona con el bloque B para orientar aulas B-101 y B-105.
+- Edificio 2: punto de referencia para gestion de carnet institucional, ubicada en el piso 3. En el prototipo se relaciona con el bloque B para orientar aulas B-101 y B-105.
 - Edificio 3: punto de referencia para copias, impresion, laboratorios, Ingenieria, Ciencias de la Computacion y Centro de Idiomas. Aulas/laboratorios asociados: C-301, LAB-01, LAB-02, LAB-03, LAB-1 y LAB-2.
 - Edificio 4: punto de referencia para Biblioteca PUCE Ibarra, bar/cafeteria, Secretaria General, Tesoreria, Sala de Grados y servicios administrativos.
 - Edificio 5 / zona deportiva: al dirigirse hacia el Edificio 5, a la derecha se encuentra el estadio junto a las canchas de basket y voley.
@@ -85,7 +87,8 @@ SERVICIOS FRECUENTES
 - Secretaria General: Edificio 4, planta baja.
 - Direccion de Estudiantes: Edificio 1.
 - Sala de Grados: Edificio 4, planta baja.
-- Carnet institucional: Edificio 2.
+- Carnet institucional: se gestiona en el Edificio 2, piso 3.
+- Ingreso fisico al campus: presentar el carnet estudiantil vigente. Si el estudiante no lo porta, debe registrar su ingreso en la hoja de control administrada por los guardias de seguridad.
 - Laboratorios de computacion: Edificio 3 / zona de Laboratorios; usar el codigo de aula LAB que aparezca en el horario.
 - Capilla: pasando la entrada principal de la PUCESI.
 - Actividades deportivas: estadio hacia el Edificio 5, a la derecha, junto a las canchas de basket y voley.
@@ -95,7 +98,8 @@ COMO RESPONDER PREGUNTAS DE UBICACION
 - Pregunta: "Donde queda el bar?" Respuesta esperada: "Hay dos bares/cafeterias principales: uno en el Edificio 1 y otro en el Edificio 4".
 - Pregunta: "Donde saco copias?" Respuesta esperada: "El servicio de copias e impresion queda en el Edificio 3".
 - Pregunta: "Donde pago?" Respuesta esperada: "Tesoreria esta en planta baja del Edificio 4".
-- Pregunta: "Donde saco el carnet?" Respuesta esperada: "El carnet institucional se gestiona en el Edificio 2".
+- Pregunta: "Donde saco el carnet?" Respuesta esperada: "El carnet institucional se gestiona en el Edificio 2, piso 3".
+- Pregunta: "Que necesito para entrar a la universidad?" Respuesta esperada: "Para ingresar fisicamente al campus debes presentar tu carnet estudiantil vigente. Si no lo tienes contigo, debes registrar tu ingreso en la hoja de control administrada por los guardias de seguridad".
 - Pregunta: "Donde queda la biblioteca?" Respuesta esperada: "La biblioteca queda dentro del Edificio 4".
 - Pregunta: "Donde queda Direccion de Estudiantes?" Respuesta esperada: "Direccion de Estudiantes queda en el Edificio 1".
 - Pregunta: "Donde queda el estadio?" Respuesta esperada: "El estadio queda yendo hacia el Edificio 5; a la derecha lo veras junto a las canchas de basket y voley".

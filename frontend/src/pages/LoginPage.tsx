@@ -5,6 +5,31 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 
+type ApiErrorPayload = {
+  error?: string | Record<string, string | string[]>;
+};
+
+type ApiError = {
+  response?: {
+    data?: ApiErrorPayload;
+  };
+};
+
+const getApiErrorMessage = (err: unknown, fallback: string) => {
+  const errorData = (err as ApiError).response?.data?.error;
+  let message = fallback;
+
+  if (typeof errorData === 'string') {
+    message = errorData;
+  } else if (errorData && typeof errorData === 'object') {
+    const firstKey = Object.keys(errorData)[0];
+    const errorVal = errorData[firstKey];
+    message = Array.isArray(errorVal) ? errorVal[0] : String(errorVal);
+  }
+
+  return message;
+};
+
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -13,7 +38,7 @@ const LoginPage: React.FC = () => {
   const [step, setStep] = useState(1); // 1: Login, 2: 2FA OTP
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   // Form State
   const [formData, setFormData] = useState({
     username: '',
@@ -47,19 +72,8 @@ const LoginPage: React.FC = () => {
         setAuth(user, access, refresh);
         navigate(user.role === 'teacher' ? '/teacher' : '/dashboard');
       }
-    } catch (err: any) {
-      const errorData = err.response?.data?.error;
-      let message = 'Datos erróneos. Por favor, inténtelo otra vez.';
-      
-      if (typeof errorData === 'string') {
-        message = errorData;
-      } else if (errorData && typeof errorData === 'object') {
-        const firstKey = Object.keys(errorData)[0];
-        const errorVal = errorData[firstKey];
-        message = Array.isArray(errorVal) ? errorVal[0] : String(errorVal);
-      }
-      
-      setError(message);
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, 'Datos erróneos. Por favor, inténtelo otra vez.'));
     } finally {
       setLoading(false);
     }
@@ -79,19 +93,8 @@ const LoginPage: React.FC = () => {
       const { user, access, refresh } = response.data;
       setAuth(user, access, refresh);
       navigate(user.role === 'teacher' ? '/teacher' : '/dashboard');
-    } catch (err: any) {
-      const errorData = err.response?.data?.error;
-      let message = 'Código incorrecto o expirado.';
-      
-      if (typeof errorData === 'string') {
-        message = errorData;
-      } else if (errorData && typeof errorData === 'object') {
-        const firstKey = Object.keys(errorData)[0];
-        const errorVal = errorData[firstKey];
-        message = Array.isArray(errorVal) ? errorVal[0] : String(errorVal);
-      }
-      
-      setError(message);
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, 'Código incorrecto o expirado.'));
     } finally {
       setLoading(false);
     }

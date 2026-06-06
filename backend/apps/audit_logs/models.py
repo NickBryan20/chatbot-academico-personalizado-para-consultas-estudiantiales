@@ -28,6 +28,11 @@ class AuditLog(models.Model):
         DATA_ACCESS_GRADES = 'DATA_ACCESS_GRADES', 'Acceso a notas'
         DATA_ACCESS_SCHEDULE = 'DATA_ACCESS_SCHEDULE', 'Acceso a horarios'
         DATA_ACCESS_PROFILE = 'DATA_ACCESS_PROFILE', 'Acceso a perfil académico'
+        DATA_ACCESS_STATS = 'DATA_ACCESS_STATS', 'Acceso a estadísticas académicas'
+        DATA_ACCESS_ACTIVITIES = 'DATA_ACCESS_ACTIVITIES', 'Acceso a actividades'
+        DATA_ACCESS_NOTIFICATIONS = 'DATA_ACCESS_NOTIFICATIONS', 'Acceso a notificaciones'
+        DATA_SUBMIT_ACTIVITY = 'DATA_SUBMIT_ACTIVITY', 'Entrega de actividad'
+        TEACHER_CREATE_ACTIVITY = 'TEACHER_CREATE_ACTIVITY', 'Creación de actividad docente'
 
         # RAG
         RAG_QUERY = 'RAG_QUERY', 'Consulta al índice RAG'

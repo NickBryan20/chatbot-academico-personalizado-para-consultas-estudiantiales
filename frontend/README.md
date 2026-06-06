@@ -5,7 +5,7 @@ Este directorio contiene la aplicación cliente construida en React y TypeScript
 ## 📊 Resumen estadístico del frontend
 
 - 6 páginas principales: `LandingPage`, `LoginPage`, `Dashboard`, `TeacherDashboard`, `AutoServicioBannerPage`, `BolsaEmpleoPage`
-- 3 componentes clave: `ChatWindow`, `CampusMapSection`, `ProtectedRoute`
+- 2 componentes clave: `ChatWindow`, `ProtectedRoute`
 - 1 servicio API central: `src/services/api.ts`
 - 1 store de autenticación: `src/store/authStore.ts`
 - 1 widget flotante de chatbot con estados cerrado y abierto
@@ -65,7 +65,6 @@ Muestra el mismo fondo de la interfaz principal con el chatbot desplegado.
 ### Componentes principales
 
 - `src/components/ChatWindow.tsx`: Widget flotante del chatbot con envío de texto, grabación de voz y reproducción de audio.
-- `src/components/CampusMapSection.tsx`: Mapa visual del campus con edificios, accesos temporales, aulas, servicios frecuentes y enlace a horarios/prerrequisitos 2026-01.
 - `src/components/ProtectedRoute.tsx`: Protege rutas del dashboard para usuarios autenticados.
 - `src/pages/Dashboard.tsx`: Panel central del estudiante con notificaciones, horario y calificaciones.
 - `src/pages/TeacherDashboard.tsx`: Panel docente para materias, horario y carga de actividades.

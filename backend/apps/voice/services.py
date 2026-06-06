@@ -2,7 +2,6 @@
 Servicio de voz: Speech-to-Text (Whisper) y Text-to-Speech (OpenAI TTS).
 """
 import logging
-import base64
 import re
 from io import BytesIO
 
@@ -89,6 +88,8 @@ class VoiceService:
         try:
             # Limitar texto para TTS (máximo ~500 chars para respuesta ágil)
             text_trimmed = self._prepare_tts_text(text)
+            if not text_trimmed:
+                text_trimmed = "No tengo contenido para leer en este momento."
 
             speech_kwargs = {
                 'model': settings.OPENAI_TTS_MODEL,
@@ -97,9 +98,26 @@ class VoiceService:
                 'response_format': 'mp3',
             }
             if str(settings.OPENAI_TTS_MODEL).startswith('gpt-4o-mini-tts'):
-                speech_kwargs['instructions'] = settings.OPENAI_TTS_INSTRUCTIONS
+                speech_kwargs['extra_body'] = {
+                    'instructions': settings.OPENAI_TTS_INSTRUCTIONS,
+                }
 
-            response = client.audio.speech.create(**speech_kwargs)
+            try:
+                response = client.audio.speech.create(**speech_kwargs)
+            except Exception as first_error:
+                if str(settings.OPENAI_TTS_MODEL) == 'tts-1':
+                    raise
+                logger.warning(
+                    "TTS falló con modelo %s, reintentando con tts-1: %s",
+                    settings.OPENAI_TTS_MODEL,
+                    first_error,
+                )
+                response = client.audio.speech.create(
+                    model='tts-1',
+                    voice=settings.OPENAI_TTS_VOICE,
+                    input=text_trimmed,
+                    response_format='mp3',
+                )
 
             audio_bytes = response.read()
             logger.info(f"TTS: {len(audio_bytes)} bytes generados")

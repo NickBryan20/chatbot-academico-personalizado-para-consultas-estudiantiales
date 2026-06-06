@@ -1,7 +1,7 @@
 """Settings de desarrollo."""
 from .base import *  # noqa
 
-DEBUG = True
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 
 # En desarrollo, muestra errores detallados
 # (staticfiles ya está en base.py)

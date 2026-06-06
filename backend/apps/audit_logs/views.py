@@ -19,10 +19,19 @@ class AuditLogListView(generics.ListAPIView):
         qs = AuditLog.objects.select_related('user').all()
         action = self.request.query_params.get('action')
         severity = self.request.query_params.get('severity')
+        user_id = self.request.query_params.get('user_id')
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
         if action:
             qs = qs.filter(action=action)
         if severity:
             qs = qs.filter(severity=severity)
+        if user_id:
+            qs = qs.filter(user_id=user_id)
+        if start_date:
+            qs = qs.filter(timestamp__gte=start_date)
+        if end_date:
+            qs = qs.filter(timestamp__lte=end_date)
         return qs
 
 from rest_framework.views import APIView

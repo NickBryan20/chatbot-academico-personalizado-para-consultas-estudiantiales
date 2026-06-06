@@ -46,7 +46,7 @@ api.interceptors.response.use(
           
           originalRequest.headers.Authorization = `Bearer ${access}`;
           return api(originalRequest);
-        } catch (refreshError) {
+        } catch {
           // Si falla el refresh, forzar logout
           localStorage.clear();
           window.location.href = '/login';
